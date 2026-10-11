@@ -1,0 +1,2127 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEXORA — Site Intelligence</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--bg:#08090d;--panel:#111219;--line:#2b2c36;--text:#f5f5f7;--muted:#a1a3b2;--pink:#f04e98;--blue:#61b8ff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.top{position:sticky;top:0;z-index:900;background:#090a0fee;border-bottom:1px solid var(--line);padding:15px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px}.brand{font-weight:800;letter-spacing:1.5px;font-size:18px}.brand small{display:block;color:var(--muted);font-size:11px;font-weight:400;letter-spacing:0}.steps{display:flex;gap:20px;color:var(--muted);font-size:12px}.steps b{color:var(--pink)}.wrap{max-width:1500px;margin:auto;padding:24px}.intro{margin:5px 0 22px}.eyebrow{color:#ff78b5;font-size:11px;letter-spacing:2px;font-weight:700}.intro h1{font-size:clamp(27px,3vw,38px);line-height:1.15;margin:8px 0}.intro p,.muted{color:var(--muted)}.layout{display:grid;grid-template-columns:205px minmax(0,1fr);gap:16px}.side,.card{background:var(--panel);border:1px solid var(--line);border-radius:15px}.side{padding:10px;position:sticky;top:85px;height:max-content}.side button{display:block;width:100%;text-align:left;border:0;background:transparent;color:#c3c4ce;padding:10px;border-radius:9px;cursor:pointer}.side button:hover,.side button.active{background:#f04e9819;color:white;border-left:2px solid var(--pink)}.side small{display:block;color:#777b89;padding:12px 9px 5px;letter-spacing:1px}.card{padding:18px;margin-bottom:15px;scroll-margin-top:85px}.head{display:flex;justify-content:space-between;gap:10px;align-items:start;margin-bottom:14px}.head h2{font-size:16px;margin:0 0 3px}.head p{font-size:12px;color:var(--muted);margin:0}.tag{font-size:10px;border:1px solid #66304b;color:#ff8fbe;border-radius:99px;padding:4px 9px;white-space:nowrap}.mapgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,.8fr);gap:13px}#map{height:380px;border-radius:12px;border:1px solid var(--line);background:#161822}.row{display:flex;gap:8px;margin-bottom:9px}.field,select,textarea{width:100%;min-width:0;padding:10px 11px;border:1px solid #373844;border-radius:9px;background:#0b0c12;color:var(--text);outline:none}.field:focus,select:focus,textarea:focus{border-color:var(--pink)}.btn{border:1px solid #393b48;background:#191a23;color:white;padding:10px 12px;border-radius:9px;cursor:pointer}.btn.primary{background:linear-gradient(110deg,#e94491,#bd3cbd);border:0;font-weight:700}.config{background:#0d0e14;border:1px solid var(--line);border-radius:12px;padding:14px}.config h3{margin:0;font-size:14px}.label{display:block;font-size:11px;color:var(--muted);margin:12px 0 5px}.coords,.grid2,.riskgrid,.grid4{display:grid;gap:9px}.coords,.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.riskgrid{grid-template-columns:repeat(3,minmax(0,1fr))}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.coord,.metric,.mini,.placeholder,.report{border:1px solid var(--line);border-radius:11px;background:#0d0e14;padding:12px;min-width:0}.coord small{display:block;color:var(--muted);font-size:10px}.coord strong{display:block;overflow-wrap:anywhere;margin-top:4px}.range{width:100%;accent-color:var(--pink)}.between{display:flex;justify-content:space-between;color:var(--muted);font-size:11px}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.metric .name{font-size:12px;color:#d5d5de}.value{font-size:24px;font-weight:750;margin:9px 0}.bar{height:5px;background:#2a2b35;border-radius:9px;overflow:hidden}.bar span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--pink),#a96aff)}.metric small,.mini p{font-size:10px;color:var(--muted)}.mini b{font-size:12px}.mini p{font-size:11px;margin:5px 0 0}.placeholder{min-height:150px;display:grid;place-items:center;text-align:center;color:var(--muted);background:repeating-linear-gradient(0deg,#101117,#101117 34px,#191a22 35px)}.placeholder strong{display:block;color:#ddd;margin-bottom:5px}.notice{font-size:11px;color:var(--muted);padding:10px;border:1px solid var(--line);border-radius:9px;margin-top:10px}.list{list-style:none;padding:0;margin:0}.list li{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #282933;padding:9px 0}.list span{color:var(--muted)}.upload{border:1px dashed #454653;border-radius:10px;padding:12px;color:var(--muted)}.upload input{display:block;margin-top:8px;max-width:100%}.footer{text-align:center;color:#777987;font-size:11px;padding:18px}@media(max-width:950px){.layout{grid-template-columns:1fr}.side{position:static;display:flex;overflow:auto;gap:3px}.side small{display:none}.side button{min-width:max-content;width:auto}.mapgrid{grid-template-columns:1fr 280px}}@media(max-width:700px){.top{padding:12px;flex-wrap:wrap}.steps{width:100%;justify-content:space-between}.wrap{padding:14px}.mapgrid,.grid2{grid-template-columns:1fr}.riskgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}#map{height:310px}.card{padding:13px}}@media(max-width:420px){.riskgrid,.grid4,.coords,.buttons{grid-template-columns:1fr}}
+</style></head><body>
+<header class="top"><div class="brand">◉ NEXORA<small>Global Site &amp; Project Intelligence</small></div><div class="steps"><span>① Site Selection</span><span><b>② Intelligence</b></span><span>③ Report</span></div><span class="tag">MAIN WORKSPACE</span></header>
+<div class="wrap"><section class="intro"><div class="eyebrow">DECISION INTELLIGENCE WORKSPACE</div><h1>Understand the site before you invest.</h1><p class="muted">Select a location, define the analysis boundary and explore the environmental, terrain, hazard, access and project-suitability evidence available for the site.</p></section>
+<div class="layout"><aside class="side"><small>WORKSPACE</small><button class="active" data-go="site">⌖ Site &amp; Map</button><button data-go="risk">◈ Risk Overview</button><button data-go="trends">⌁ Risk Trends</button><small>INTELLIGENCE</small><button data-go="climate">☼ Climate</button><button data-go="soil">▤ Soil</button><button data-go="terrain">△ Terrain</button><button data-go="routes">↗ Routes</button><button data-go="infra">⌂ Infrastructure</button><button data-go="hazards">⚡ Other Hazards</button><button data-go="report">▣ Suitability &amp; Reports</button></aside>
+<main>
+<section class="card" id="site"><div class="head"><div><h2>01 / Interactive world map</h2><p>Search a place, use GPS, click the map or enter coordinates. Draw the actual plot boundary.</p></div><span class="tag">TOP PRIORITY</span></div><div class="mapgrid"><div><div class="row"><input id="search" class="field" placeholder="Search place, address or latitude, longitude…"><button id="searchBtn" class="btn">Search</button></div><div id="map"></div><div class="row" style="margin-top:9px;flex-wrap:wrap"><button id="draw" class="btn">Draw plot boundary</button><button id="clear" class="btn">Clear boundary</button><button id="mapStyle" class="btn">Dark map</button></div><p class="muted" style="font-size:10px">Analysis radius is the surrounding area. A drawn polygon represents the actual project plot.</p></div><div class="config"><h3>Site configuration</h3><label class="label" for="project">Project type</label><select id="project"><option value="">Select project type</option><option>Industrial Plant</option><option>Hospital</option><option>Telecom Tower</option><option>Data Centre</option><option>Manufacturing Factory</option><option>Warehouse</option><option>Power Plant</option><option>Solar Farm</option><option>Residential Township</option><option>Commercial Complex</option><option>Logistics Hub</option><option>Mining Project</option><option>Agriculture / Farm</option><option>Infrastructure Project</option><option>Other</option></select><div class="coords" style="margin-top:10px"><div class="coord"><small>Latitude</small><strong id="latView">Not selected</strong></div><div class="coord"><small>Longitude</small><strong id="lngView">Not selected</strong></div></div><div class="grid2"><div><label class="label">Latitude</label><input class="field" id="lat" placeholder="e.g. 16.7050"></div><div><label class="label">Longitude</label><input class="field" id="lng" placeholder="e.g. 74.2433"></div></div><label class="label">Analysis radius: <b id="radiusView">10 km</b></label><input class="range" id="radius" type="range" min="1" max="100" value="10"><div class="between"><span>1 km</span><span>100 km</span></div><label class="label">Site label (optional)</label><input class="field" id="siteName" placeholder="Candidate Site A"><div class="buttons"><button class="btn" id="gps">◎ Track my location</button><button class="btn primary" id="run">Run Intelligence →</button></div><p class="muted" style="font-size:10px">Backend connected. Select a site and run intelligence to load available analysis.</p></div></div></section>
+<section class="card" id="risk"><div class="head"><div><h2>02 / Risk overview</h2><p>Available model results and supported indicators are shown below; unavailable risk scores are not estimated.</p></div><span class="tag">LIVE ANALYSIS</span></div><div class="riskgrid" id="risks"></div><div class="notice"><b>Integrity rule:</b> no illustrative values are presented as actual risk results.</div></section>
+<section class="card" id="trends"><div class="head"><div><h2>03 / Risk trends &amp; historical evidence</h2><p>Historical observations and future scenarios must be distinguished.</p></div></div><div class="grid2"><div class="placeholder"><div><strong>Historical risk trend</strong>No historical time-series data loaded yet.</div></div><div class="placeholder"><div><strong>Forecast / scenario trend</strong>No forecast loaded yet; predictions will be labelled separately.</div></div></div><div class="grid2" style="margin-top:10px"><div class="mini"><b>Historical events</b><p>Counts, dates, severity and distance where the source supports them.</p></div><div class="mini"><b>Evidence provenance</b><p>Source, coverage, update date, confidence and limitations.</p></div></div></section>
+<section class="card" id="climate"><div class="head"><div><h2>04 / Climate intelligence</h2><p>Historical climate patterns and relevance to the selected project.</p></div></div><div class="grid4"><div class="mini"><b>Temperature trends</b><p>Historical minimum, mean and maximum temperature.</p></div><div class="mini"><b>Precipitation</b><p>Monthly and annual rainfall summaries with units.</p></div><div class="mini"><b>Heavy-rain indicators</b><p>Consecutive wet days and supported extreme rainfall indicators.</p></div><div class="mini"><b>Seasonality &amp; suitability</b><p>Seasonal patterns and project-specific interpretation.</p></div></div><div class="grid2" style="margin-top:10px"><div class="placeholder" id="rainfallChart"><div><strong>Monthly rainfall</strong>Run intelligence to load historical observations.</div></div><div class="placeholder" id="temperatureChart"><div><strong>Temperature trend</strong>Run intelligence to load historical observations.</div></div></div><div class="notice" id="climateStatus">Climate data not loaded.</div></section>
+<section class="card" id="soil"><div class="head"><div><h2>05 / Soil intelligence &amp; optional soil testing</h2><p>Geographic estimates are separate from laboratory results.</p></div></div><div class="grid2"><div><h3>Geographic soil data</h3><p class="muted">ISRIC SoilGrids · 250 m resolution · 0–5 cm depth.</p><button class="btn primary" id="loadSoil">Load soil estimates for selected site</button><div class="notice" id="soilStatus" style="margin-top:10px">Select a site first.</div><div class="grid2" id="soilResults" style="margin-top:10px"></div></div><div><h3>Customer soil-test input</h3><label class="label">Upload report (optional)</label><div class="upload">Select soil-test report<input id="soilFile" type="file" accept=".pdf,.csv,.xlsx,.xls,.jpg,.jpeg,.png"><p id="soilFileName" class="muted">No file selected; not uploaded.</p></div><label class="label">Manual test notes</label><textarea id="soilNotes" rows="3" placeholder="Parameter, result, unit, sample depth, test date…"></textarea></div></div><div class="notice">Geographic estimates are modelled values, not laboratory measurements. Selecting a file does not upload it.</div></section>
+<section class="card" id="terrain"><div class="head"><div><h2>06 / Terrain &amp; land conditions</h2><p>Measurements and indicators only where supported by the source.</p></div></div><div class="grid4"><div class="mini"><b>Elevation</b><p>Not loaded; source value and unit required.</p></div><div class="mini"><b>Slope / profile</b><p>Not loaded; terrain analysis required.</p></div><div class="mini"><b>Landform</b><p>Not loaded; classification required.</p></div><div class="mini"><b>Floodplain indicators</b><p>Show only when supported by data.</p></div></div><div class="notice" id="terrainStatus">Terrain analysis not loaded.</div></section>
+<section class="card" id="routes"><div class="head"><div><h2>07 / Route intelligence</h2><p>Origin, destination, geometry, distance, travel time, road access and supported route risks.</p></div></div><div class="grid2"><div><label class="label">Origin (latitude, longitude)</label><input id="origin" class="field" placeholder="Use selected site"><button class="btn" id="useOrigin" style="margin-top:8px">Use selected site as origin</button></div><div><label class="label">Destination coordinates</label><input id="destination" class="field" placeholder="Latitude, longitude"></div></div><div class="grid2"><div><label class="label">Transport mode</label><select id="mode"><option>Road</option><option>Rail (if supported)</option><option>Port / maritime (if supported)</option><option>Air (if supported)</option></select></div><div><label class="label">Destination purpose</label><select id="purpose"><option>Supplier</option><option>Customer</option><option>Port</option><option>Airport</option><option>Railway station</option><option>Other</option></select></div></div><button class="btn" id="previewRoute" style="margin-top:10px">Preview endpoints on map</button><div class="notice" id="routeStatus">Route analysis not loaded. A straight-line preview is not a road route.</div></section>
+<section class="card" id="infra"><div class="head"><div><h2>08 / Infrastructure &amp; nearby assets</h2><p>Distances, accessibility and infrastructure gaps within the analysis area.</p></div></div><div class="grid4"><div class="mini"><b>Roads &amp; highways</b><p>Connectivity and distance where available.</p></div><div class="mini"><b>Railways &amp; airports</b><p>Transport hubs and access distances.</p></div><div class="mini"><b>Hospitals &amp; emergency services</b><p>Nearby services and coverage.</p></div><div class="mini"><b>Power &amp; utilities</b><p>Substations and utilities where supported.</p></div></div><div class="notice" id="infraStatus">Infrastructure analysis not loaded.</div></section>
+<section class="card" id="hazards"><div class="head"><div><h2>09 / Other hazards &amp; scenarios</h2><p>Only show hazard modules supported by the data and backend.</p></div></div><div class="grid4"><div class="mini"><b>Cyclone evidence</b><p>Historical events and exposure indicators.</p></div><div class="mini"><b>Earthquake evidence</b><p>Seismic context and source-backed indicators.</p></div><div class="mini"><b>Rainfall sensitivity</b><p>Effects of supported rainfall conditions.</p></div><div class="mini"><b>Environmental context</b><p>Implemented hazards and limitations.</p></div></div><div class="notice">Every scenario should state assumptions, time horizon, source and whether it is observed, estimated or forecast.</div></section>
+<section class="card" id="report"><div class="head"><div><h2>10 / Site suitability, comparison &amp; reports</h2><p>Evidence-led, project-specific decision support.</p></div><span class="tag">REPORT</span></div><div class="grid2"><div class="mini"><b>Project-specific suitability</b><p>Criteria depend on selected project type.</p></div><div class="mini"><b>Site comparison</b><p>Compare candidate sites using consistent criteria.</p></div><div class="mini"><b>Risk explanations</b><p>Show why a result was produced, its source and confidence.</p></div><div class="mini"><b>Data confidence &amp; limitations</b><p>Make missing data and uncertainty visible.</p></div></div><div class="report" style="margin-top:12px"><h3>NEXORA Site Intelligence Report</h3><p id="summary" class="muted">No site selected.</p><ul class="list"><li><span>Coordinates</span><b id="rCoords">Not selected</b></li><li><span>Project type</span><b id="rProject">Not selected</b></li><li><span>Analysis radius</span><b id="rRadius">10 km</b></li><li><span>Plot boundary</span><b id="rPlot">Not drawn</b></li><li><span>Evidence status</span><b>Awaiting backend integration</b></li></ul><div class="row" style="margin-top:12px;flex-wrap:wrap"><button class="btn" id="export">Export site summary (JSON)</button><button class="btn primary" onclick="window.print()">Print / Save as PDF</button></div></div></section><div class="footer">NEXORA · Global Site &amp; Project Intelligence · Frontend-first version</div>
+</main></div></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(()=>{const $=id=>document.getElementById(id);const names=[["flood","Flood risk"],["rain","Heavy-rain risk"],["cyclone","Cyclone risk"],["earthquake","Earthquake risk"],["terrain","Terrain risk"],["route","Route risk"]];$("risks").innerHTML=names.map(([id,n])=>`<article class="metric" data-metric="${id}"><div class="name">◈ ${n}</div><div class="value">—%</div><div class="bar"><span></span></div><small>Waiting for supported analysis</small></article>`).join("");let map=null,marker=null,circle=null,polygon=null,points=[],cornerMarkers=[],drawing=false,dark=false,tiles=null,routeLayer=null;window.nexoraPlotBoundaryCoordinates=[];let site={lat:null,lng:null,radius:10};if(window.L){map=L.map("map").setView([20.5937,78.9629],5);tiles=L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map);map.on("click",e=>{if(drawing){points.push([e.latlng.lat,e.latlng.lng]);window.nexoraPlotBoundaryCoordinates=points.map(([latitude,longitude])=>({latitude,longitude}));cornerMarkers.push(L.circleMarker(e.latlng,{radius:6,color:"#ffffff",weight:2,fillColor:"#f04e98",fillOpacity:1}).addTo(map));if(polygon)map.removeLayer(polygon);polygon=points.length>1?L.polygon(points,{color:"#61b8ff",weight:3,fillOpacity:.2}).addTo(map):null;$("draw").textContent="Finish boundary ("+points.length+" corners)";$("rPlot").textContent="Drawing boundary · "+points.length+" corner"+(points.length===1?"":"s")+" added. Click each remaining plot corner.";return}setSite(e.latlng.lat,e.latlng.lng,true)})}else $("map").textContent="Map library unavailable; check internet connection.";function plotAreaKm2(){if(points.length<3)return null;const rad=Math.PI/180,R=6371;let sum=0;for(let i=0;i<points.length;i++){const a=points[i],b=points[(i+1)%points.length];sum+=(b[1]-a[1])*rad*(2+Math.sin(a[0]*rad)+Math.sin(b[0]*rad));}return Math.abs(sum)*R*R/2;}function updatePlotLabel(){const area=plotAreaKm2();$("rPlot").textContent=points.length<3?"Not drawn":("Boundary drawn ("+points.length+" vertices) · "+area.toFixed(4)+" km²");}function setSite(lat,lng,zoom){lat=Number(lat);lng=Number(lng);if(!Number.isFinite(lat)||!Number.isFinite(lng)||lat < -90||lat>90||lng < -180||lng>180){alert("Enter valid latitude and longitude.");return}site.lat=lat;site.lng=lng;$("lat").value=lat.toFixed(6);$("lng").value=lng.toFixed(6);$("latView").textContent=lat.toFixed(6)+"°";$("lngView").textContent=lng.toFixed(6)+"°";if(map){if(!marker)marker=L.marker([lat,lng]).addTo(map);else marker.setLatLng([lat,lng]);if(zoom)map.setView([lat,lng],12);site.radius=+$("radius").value;if(!circle)circle=L.circle([lat,lng],{radius:site.radius*1000,color:"#f04e98",fillOpacity:.08}).addTo(map);else circle.setLatLng([lat,lng]).setRadius(site.radius*1000)}sync()}function sync(){site.radius=+$("radius").value;$("radiusView").textContent=site.radius+" km";$("rCoords").textContent=site.lat==null?"Not selected":site.lat.toFixed(6)+", "+site.lng.toFixed(6);$("rProject").textContent=$("project").value||"Not selected";$("rRadius").textContent=site.radius+" km";$("summary").textContent=site.lat==null?"No site selected. Select a location and project type.":($("siteName").value||"Selected site")+" · "+($("project").value||"Project type not selected")+" · "+site.radius+" km analysis radius."} $("searchBtn").onclick=()=>{let q=$("search").value.trim(),m=q.match(/^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/);if(m)return setSite(m[1],m[2],true);if(!q)return;fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q="+encodeURIComponent(q)).then(r=>r.json()).then(a=>{if(!a.length)throw Error("No location found");setSite(a[0].lat,a[0].lon,true)}).catch(e=>alert(e.message+" Enter coordinates directly if needed."))};$("search").onkeydown=e=>{if(e.key==="Enter")$("searchBtn").click()};$("gps").onclick=()=>navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>setSite(p.coords.latitude,p.coords.longitude,true),()=>alert("Location unavailable. Check browser permission.")):alert("Geolocation is not supported.");$("lat").onchange=$("lng").onchange=()=>{if($("lat").value&&$("lng").value)setSite($("lat").value,$("lng").value,true)};$("radius").oninput=()=>{if(map&&site.lat!=null){circle.setRadius(+$("radius").value*1000)}sync()};$("project").onchange=$("siteName").oninput=sync;$("draw").onclick=()=>{if(!map){alert("The map is not ready. Refresh the page and try again.");return}if(!drawing){points=[];window.nexoraPlotBoundaryCoordinates=[];cornerMarkers.forEach(m=>map.removeLayer(m));cornerMarkers=[];if(polygon)map.removeLayer(polygon);polygon=null;drawing=true;$("draw").textContent="Finish boundary (0 corners)";$("rPlot").textContent="DRAWING: click at least 3 actual plot corners on the map. Each click adds a visible pink marker.";map.getContainer().style.cursor="crosshair";}else{if(points.length<3){$("rPlot").textContent="Boundary incomplete: "+points.length+" corner(s). Add "+(3-points.length)+" more on the map.";alert("Only "+points.length+" corner(s) recorded. Click at least 3 different plot corners on the map, then finish.");return}drawing=false;map.getContainer().style.cursor="";if(polygon)polygon.setStyle({color:"#f04e98",weight:3,fillOpacity:.18});$("draw").textContent="Draw plot boundary";updatePlotLabel();}};$("clear").onclick=()=>{points=[];drawing=false;if(map)map.getContainer().style.cursor="";if(polygon&&map)map.removeLayer(polygon);polygon=null;cornerMarkers.forEach(m=>{if(map)map.removeLayer(m)});cornerMarkers=[];$("draw").textContent="Draw plot boundary";$("rPlot").textContent="Not drawn";};$("mapStyle").onclick=()=>{if(!map)return;map.removeLayer(tiles);dark=!dark;tiles=L.tileLayer(dark?"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png":"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{subdomains:"abcd",maxZoom:19,attribution:"© OpenStreetMap / CARTO"}).addTo(map);$("mapStyle").textContent=dark?"Standard map":"Dark map"};if($("soilFile"))$("soilFile").onchange=()=>{$("soilFileName").textContent=$("soilFile").files?.[0]?"Selected locally: "+$("soilFile").files[0].name+" · Not uploaded to NEXORA.":"No file selected; not uploaded.";};
+
+
+  // NEXORA geographic soil results.
+  window.nexoraSoilEstimates = null;
+  const soilLabels = {
+    ph: ["Soil pH", "pH"],
+    clay: ["Clay", "g/kg"],
+    sand: ["Sand", "g/kg"],
+    silt: ["Silt", "g/kg"],
+    bulk_density: ["Bulk density", "g/cm³"],
+    cec: ["Cation exchange capacity (CEC)", "mmol(c)/kg"],
+    organic_carbon: ["Organic carbon", "dg/kg"],
+    coarse_fragments: ["Coarse fragments", "%"]
+  };
+
+  const soilButton = $("loadSoil");
+  if (soilButton) soilButton.onclick = async () => {
+    const status = $("soilStatus");
+    const results = $("soilResults");
+
+    if (site.lat == null || site.lng == null) {
+      status.textContent = "Select a location on the map or enter coordinates first.";
+      return;
+    }
+
+    soilButton.disabled = true;
+    status.textContent = "Retrieving SoilGrids data. The first request may take several minutes.";
+    results.replaceChildren();
+
+    try {
+      const query = new URLSearchParams({
+        latitude: String(site.lat),
+        longitude: String(site.lng)
+      });
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/soil/geographic?" + query.toString()
+      );
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || "HTTP " + response.status);
+
+      window.nexoraSoilEstimates = data;
+      let available = 0;
+
+      for (const [key, label] of Object.entries(soilLabels)) {
+        const item = data.properties && data.properties[key];
+        const raw = item && item.value;
+        const value = raw !== null && raw !== undefined && Number.isFinite(Number(raw))
+          ? Number(raw) : null;
+
+        const card = document.createElement("div");
+        card.className = "mini";
+        const title = document.createElement("b");
+        title.textContent = label[0];
+        const detail = document.createElement("p");
+
+        if (value !== null) {
+          detail.textContent = value.toLocaleString(undefined, {
+            maximumFractionDigits: 3
+          }) + " " + label[1];
+          available++;
+        } else {
+          detail.textContent = "Unavailable";
+          if (item && item.error) detail.title = item.error;
+        }
+
+        card.append(title, detail);
+        results.appendChild(card);
+      }
+
+      status.textContent = available + " of 8 properties available · "
+        + (data.source || "ISRIC SoilGrids") + " · "
+        + (data.depth || "0–5 cm") + " · "
+        + (data.resolution_m || 250) + " m resolution. Modelled estimates.";
+    } catch (error) {
+      status.textContent = "Soil request failed: " + error.message
+        + ". Confirm the backend is running on port 8000.";
+    } finally {
+      soilButton.disabled = false;
+    }
+  };
+
+  // NEXORA route integration: validated route preview.
+  const routeMessage = (message) => {
+    const node = $("routeStatus");
+    if (node) node.textContent = message;
+  };
+
+  const parseRouteCoordinates = (value, label) => {
+    const match = String(value || "").trim().match(
+      /^(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)$/
+    );
+    if (!match) {
+      throw new Error(label + " must use latitude, longitude format.");
+    }
+    const lat = Number(match[1]);
+    const lng = Number(match[2]);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng) ||
+        lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+      throw new Error(label + " coordinates are outside valid ranges.");
+    }
+    return { lat, lng };
+  };
+
+  if ($("useOrigin")) {
+    $("useOrigin").onclick = () => {
+      if (site.lat == null || site.lng == null) {
+        routeMessage("Select a site on the map first.");
+        return;
+      }
+      $("origin").value =
+        site.lat.toFixed(6) + ", " + site.lng.toFixed(6);
+      routeMessage("Origin set to the selected site. Enter the destination coordinates.");
+    };
+  }
+
+  if ($("previewRoute")) {
+    $("previewRoute").onclick = async () => {
+      const button = $("previewRoute");
+      try {
+        const mode = String($("mode")?.value || "road").toLowerCase();
+        if (!mode.includes("road") && !mode.includes("driv") &&
+            !mode.includes("car")) {
+          throw new Error("Only road-driving routes are supported currently.");
+        }
+
+        const origin = parseRouteCoordinates($("origin")?.value, "Origin");
+        const destination = parseRouteCoordinates(
+          $("destination")?.value, "Destination"
+        );
+
+        button.disabled = true;
+        routeMessage("Calculating route…");
+
+        const params = new URLSearchParams({
+          origin_latitude: String(origin.lat),
+          origin_longitude: String(origin.lng),
+          destination_latitude: String(destination.lat),
+          destination_longitude: String(destination.lng)
+        });
+
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/analyze/route?" + params.toString()
+        );
+        const payload = await response.json();
+
+        if (!response.ok) {
+          throw new Error(payload.detail || payload.message ||
+            "Route API returned HTTP " + response.status);
+        }
+
+        const analysis = payload.analysis;
+        const coordinates = analysis?.geometry?.coordinates;
+        if (!Array.isArray(coordinates) || coordinates.length < 2) {
+          throw new Error("The route service returned no usable route geometry.");
+        }
+
+        const latLngs = coordinates
+          .filter(p => Array.isArray(p) && p.length >= 2 &&
+            Number.isFinite(Number(p[0])) && Number.isFinite(Number(p[1])))
+          .map(p => [Number(p[1]), Number(p[0])]);
+
+        if (latLngs.length < 2 || !window.L || !map) {
+          throw new Error("Route geometry or map is unavailable.");
+        }
+
+        if (routeLayer) map.removeLayer(routeLayer);
+        routeLayer = L.polyline(latLngs, {
+          color: "#e94e9b", weight: 5, opacity: 0.92
+        }).addTo(map);
+        map.fitBounds(routeLayer.getBounds(), { padding: [24, 24] });
+
+        const distance = Number(analysis.distance_km);
+        const duration = Number(analysis.travel_time_min);
+        const roads = analysis.legs?.[0]?.summary || "Road route calculated";
+
+        window.nexoraLatestRoute = {
+          origin: { latitude: origin.lat, longitude: origin.lng },
+          destination: { latitude: destination.lat, longitude: destination.lng },
+          distance_km: Number.isFinite(distance) ? distance : null,
+          travel_time_min: Number.isFinite(duration) ? duration : null,
+          road_summary: roads,
+          source: analysis.source || payload.source || "Route service",
+          limitations: analysis.limitations || [
+            "Estimated driving time; live traffic is not included."
+          ],
+          calculated_at: new Date().toISOString()
+        };
+
+
+        routeMessage(
+          "Route calculated successfully.\n" +
+          "Roads: " + roads + "\n" +
+          "Distance: " + (Number.isFinite(distance) ? distance.toFixed(2) + " km" : "Unavailable") + "\n" +
+          "Estimated driving time: " + (Number.isFinite(duration) ? duration.toFixed(1) + " minutes" : "Unavailable") + "\n" +
+          "Source: " + (analysis.source || payload.source || "Route service") + "\n" +
+          "Limitation: estimated time; live traffic is not included."
+        );
+      } catch (error) {
+        routeMessage("Route unavailable: " + (error?.message || String(error)));
+      } finally {
+        button.disabled = false;
+      }
+    };
+  }
+
+  // NEXORA panel integration: site intelligence + supported analysis modules.
+$("run").onclick = async () => {
+  if (site.lat == null) return alert("Select a site first.");
+  if (!$("project").value) return alert("Select a project type.");
+
+  sync();
+  const button = $("run");
+  button.disabled = true;
+  button.textContent = "Analyzing...";
+
+  const ensureOutput = (id, parentId) => {
+    let node = $(id);
+    if (!node) {
+      node = document.createElement("div");
+      node.id = id;
+      node.className = "notice";
+      node.style.cssText =
+        "margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere";
+      $(parentId).appendChild(node);
+    }
+    return node;
+  };
+
+  const show = (id, parentId, title, data) => {
+    const node = ensureOutput(id, parentId);
+    node.replaceChildren();
+
+    const heading = document.createElement("h3");
+    heading.textContent = title;
+    heading.style.margin = "0 0 10px";
+    node.appendChild(heading);
+
+    const flatten = (value, prefix = "", depth = 0) => {
+      if (value === null || value === undefined || value === "") {
+        return [[prefix || "Value", "Unavailable"]];
+      }
+
+      if (typeof value !== "object") {
+        return [[prefix || "Value", String(value)]];
+      }
+
+      if (depth > 4) {
+        return [[prefix || "Details", "Additional nested data omitted"]];
+      }
+
+      if (Array.isArray(value)) {
+        if (!value.length) return [[prefix || "Items", "None reported"]];
+        if (value.every(v => typeof v !== "object" || v === null)) {
+          return [[prefix || "Items", value.join(", ")]];
+        }
+        return value.slice(0, 8).flatMap((item, i) =>
+          flatten(item, (prefix ? prefix + " " : "") + (i + 1), depth + 1)
+        );
+      }
+
+      return Object.entries(value).flatMap(([key, val]) => {
+        const label = key
+          .replace(/_/g, " ")
+          .replace(/\b\w/g, ch => ch.toUpperCase());
+        return flatten(val, prefix ? prefix + " · " + label : label, depth + 1);
+      });
+    };
+
+    const rows = flatten(data);
+    const table = document.createElement("div");
+    table.style.cssText =
+      "display:grid;grid-template-columns:minmax(130px,0.8fr) minmax(0,1.5fr);" +
+      "gap:7px 14px;overflow-wrap:anywhere;font-size:12px;line-height:1.5";
+
+    for (const [label, value] of rows.slice(0, 45)) {
+      const key = document.createElement("div");
+      key.textContent = label;
+      key.style.cssText = "color:var(--muted,#a7a9b8);font-weight:600";
+
+      const val = document.createElement("div");
+      val.textContent = value;
+      val.style.cssText = "color:var(--text,#eee)";
+
+      table.append(key, val);
+    }
+
+    node.appendChild(table);
+    if (rows.length > 45) {
+      const note = document.createElement("p");
+      note.textContent = "Showing the first 45 fields.";
+      node.appendChild(note);
+    }
+  };
+
+  const updateCards = (sectionId, items) => {
+    const cards = document.querySelectorAll(
+      "#" + sectionId + " .grid4 .mini"
+    );
+    items.forEach((item, index) => {
+      const card = cards[index];
+      if (!card) return;
+      const title = card.querySelector("b");
+      const paragraph = card.querySelector("p");
+      if (title) title.textContent = item.title;
+      if (paragraph) paragraph.textContent = item.value;
+    });
+  };
+
+  const formatNumber = (value, digits = 1) =>
+    value === null || value === undefined || !Number.isFinite(Number(value))
+      ? "Unavailable"
+      : Number(value).toFixed(digits);
+
+  const setMetric = (id, value, note) => {
+    const card = document.querySelector('[data-metric="' + id + '"]');
+    if (!card) return;
+    card.querySelector(".value").textContent = value;
+    card.querySelector("small").textContent = note;
+    const bar = card.querySelector(".bar span");
+    if (bar) {
+      const numeric = Number.parseFloat(value);
+      bar.style.width = Number.isFinite(numeric)
+        ? Math.max(0, Math.min(100, numeric)) + "%"
+        : "0%";
+    }
+  };
+
+  try {
+    const params = new URLSearchParams({
+      latitude: String(site.lat),
+      longitude: String(site.lng),
+      radius_km: String(site.radius)
+    });
+    const base = "http://127.0.0.1:8000";
+
+    const requests = await Promise.allSettled([
+      fetch(base + "/api/site/intelligence?" + params).then(async r => {
+        const d = await r.json();
+        if (!r.ok) throw Error("Site intelligence: " + JSON.stringify(d));
+        return d;
+      }),
+      fetch(base + "/api/analyze/terrain?" + params).then(async r => {
+        const d = await r.json();
+        if (!r.ok) throw Error("Terrain: " + JSON.stringify(d));
+        return d;
+      }),
+      fetch(base + "/api/analyze/infrastructure?" + params).then(async r => {
+        const d = await r.json();
+        if (!r.ok) throw Error("Infrastructure: " + JSON.stringify(d));
+        return d;
+      }),
+      fetch(base + "/api/analyze/scenarios?" + params).then(async r => {
+        const d = await r.json();
+        if (!r.ok) throw Error("Scenarios: " + JSON.stringify(d));
+        return d;
+      }),
+      fetch(base + "/analyze/climate?" + new URLSearchParams({
+        latitude: String(site.lat), longitude: String(site.lng)
+      })).then(async r => {
+        const d = await r.json();
+        if (!r.ok) throw Error("Climate: " + JSON.stringify(d));
+        return d;
+      })
+    ]);
+
+    const names = ["Site intelligence", "Terrain", "Infrastructure", "Scenarios", "Climate"];
+    const result = {};
+    requests.forEach((item, i) => {
+      if (item.status === "fulfilled") result[names[i]] = item.value;
+      else result[names[i]] = { error: item.reason?.message || "Request failed" };
+    });
+
+    const data = result["Site intelligence"];
+    if (data.error) throw Error(data.error);
+
+    const climate = data.climate?.climate || {};
+    const prediction = data.flood_ml?.prediction || {};
+    const decision = data.decision_intelligence || {};
+
+    // NEXORA climate charts: aggregate only the daily observations returned by the API.
+    const climateSeries = Array.isArray(result.Climate?.daily_series) ? result.Climate.daily_series : [];
+    const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const monthly = new Map();
+    climateSeries.forEach(row => {
+      if (!row.date) return;
+      const key = row.date.slice(0, 7);
+      if (!monthly.has(key)) monthly.set(key, {key, rain: 0, rainCount: 0, temp: 0, tempCount: 0});
+      const m = monthly.get(key);
+      const rain = Number(row.precipitation_mm);
+      if (Number.isFinite(rain)) { m.rain += rain; m.rainCount++; }
+      const temp = Number(row.temperature_mean);
+      if (Number.isFinite(temp)) { m.temp += temp; m.tempCount++; }
+    });
+    const months = [...monthly.values()].sort((a,b) => a.key.localeCompare(b.key));
+    const rainNode = $("rainfallChart"), tempNode = $("temperatureChart");
+    if (months.length && rainNode) {
+      const maxRain = Math.max(1, ...months.map(m => m.rainCount ? m.rain : 0));
+      rainNode.className = "placeholder";
+      rainNode.style.display = "block";
+      rainNode.style.textAlign = "left";
+      rainNode.style.padding = "14px";
+      const bars = months.map(m => {
+        const value = m.rainCount ? m.rain : null;
+        const height = value === null ? 0 : Math.max(2, value / maxRain * 110);
+        return `<div title="${m.key}: ${value === null ? "unavailable" : value.toFixed(1)+" mm"}" style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px"><span style="font-size:9px;color:#b7b8c5">${value === null ? "—" : value.toFixed(0)}</span><div style="height:${height}px;width:70%;max-width:24px;background:linear-gradient(180deg,#61b8ff,#3683cf);border-radius:4px 4px 0 0"></div><small style="font-size:9px;color:#a1a3b2">${monthNames[Number(m.key.slice(5,7))-1]}</small></div>`;
+      }).join("");
+      rainNode.innerHTML = `<strong>Monthly rainfall (mm)</strong><div style="height:150px;display:flex;align-items:flex-end;gap:5px;margin-top:12px;border-bottom:1px solid #383945">${bars}</div><div style="font-size:10px;color:#a1a3b2;margin-top:8px">Monthly totals aggregated from ${climateSeries.length} daily observations. A dash means unavailable data.</div>`;
+    } else if (rainNode) rainNode.textContent = "Monthly rainfall chart unavailable: no daily climate observations were returned.";
+    if (months.length && tempNode) {
+      const vals = months.filter(m => m.tempCount).map(m => m.temp / m.tempCount);
+      const lo = Math.min(...vals, 0), hi = Math.max(...vals, 1), span = Math.max(1, hi - lo);
+      const width = 560, height = 170, padX = 26, padY = 24;
+      const pts = months.map((m,i) => {
+        if (!m.tempCount) return null;
+        const x = months.length === 1 ? width/2 : padX + i*(width-2*padX)/(months.length-1);
+        const y = height-padY-((m.temp/m.tempCount-lo)/span)*(height-2*padY);
+        return {x,y,m};
+      });
+      const path = pts.filter(Boolean).map((p,i) => `${i ? "L" : "M"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
+      const dots = pts.filter(Boolean).map(p => `<circle cx="${p.x}" cy="${p.y}" r="3.5" fill="#f04e98"><title>${p.m.key}: ${(p.m.temp/p.m.tempCount).toFixed(1)} °C</title></circle>`).join("");
+      const labels = months.map((m,i) => {const x=months.length===1?width/2:padX+i*(width-2*padX)/(months.length-1);return `<text x="${x}" y="${height-5}" fill="#a1a3b2" font-size="10" text-anchor="middle">${monthNames[Number(m.key.slice(5,7))-1]}</text>`}).join("");
+      tempNode.className = "placeholder";
+      tempNode.style.display = "block";
+      tempNode.style.textAlign = "left";
+      tempNode.style.padding = "14px";
+      tempNode.innerHTML = `<strong>Monthly mean temperature (°C)</strong><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Monthly mean temperature in degrees Celsius" style="width:100%;height:auto;max-height:190px;margin-top:8px"><path d="M ${padX} ${padY} V ${height-padY}" stroke="#383945" fill="none"/><path d="${path}" stroke="#f04e98" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>${dots}${labels}</svg><div style="font-size:10px;color:#a1a3b2">Monthly averages aggregated from daily observations. Historical data, not a forecast.</div>`;
+    } else if (tempNode) tempNode.textContent = "Temperature chart unavailable: no daily climate observations were returned.";
+    const climateStatus = $("climateStatus");
+    if (climateStatus) climateStatus.textContent = result.Climate?.error
+      ? "Climate chart unavailable: " + result.Climate.error
+      : `${result.Climate?.source || "Climate API"} · ${result.Climate?.observation_count || climateSeries.length} observations · ${result.Climate?.period?.start_date || "start unavailable"} to ${result.Climate?.period?.end_date || "end unavailable"}`;
+
+  // NEXORA historical-and-scenario evidence integration.
+  const historical = data.historical_flood || {};
+  const nearestEvent = historical.nearest_historical_event || null;
+  const scenarioRows = result.Scenarios?.scenarios || [];
+  const trendPlaceholders = document.querySelectorAll("#trends .placeholder");
+  const trendMiniCards = document.querySelectorAll("#trends .mini");
+
+  const setEvidenceCard = (node, headingText, bodyText) => {
+    if (!node) return;
+    const heading = document.createElement("strong");
+    heading.textContent = headingText;
+    const body = document.createElement("div");
+    body.textContent = bodyText;
+    node.replaceChildren(heading, body);
+  };
+
+  const eventCount = historical.event_count ?? historical.historical_events?.length ?? 0;
+  const nearestText = nearestEvent
+    ? "Nearest mapped event: " +
+      (nearestEvent.distance_km != null
+        ? Number(nearestEvent.distance_km).toFixed(1) + " km away"
+        : "distance unavailable") +
+      (nearestEvent.start_date ? "; date " + nearestEvent.start_date : "") + "."
+    : "No nearest mapped event was returned.";
+
+  setEvidenceCard(
+    trendPlaceholders[0],
+    "Historical flood evidence",
+    "Mapped events in the selected search area: " + eventCount +
+      ". Status: " + (historical.risk_status || "Unavailable") +
+      ". Confidence: " + (historical.confidence || "Unavailable") +
+      ". " + nearestText +
+      " No mapped events does not prove that a site is flood-safe."
+  );
+
+  const scenarioText = scenarioRows.length
+    ? scenarioRows.map(item =>
+        (item.label || item.scenario_type || item.name || "Scenario") +
+        ": " +
+        (item.scenario_precipitation_mm != null
+          ? Number(item.scenario_precipitation_mm).toFixed(1) + " mm"
+          : "rainfall value unavailable") +
+        (item.change_percent != null ? " (" + item.change_percent + "% change)" : "")
+      ).join(" | ") +
+      ". These are hypothetical stress tests, not forecasts."
+    : "Scenario results are unavailable. Run site analysis to load supported scenarios.";
+
+  setEvidenceCard(
+    trendPlaceholders[1],
+    "Rainfall scenario stress tests",
+    scenarioText
+  );
+
+  if (trendMiniCards[0]) {
+    const heading = trendMiniCards[0].querySelector("b");
+    const paragraph = trendMiniCards[0].querySelector("p");
+    if (heading) heading.textContent = "Historical events and coverage";
+    if (paragraph) paragraph.textContent =
+      eventCount + " mapped event(s); confidence " +
+      (historical.confidence || "unavailable") +
+      ". Source: Global Flood Database where available. Coverage gaps may exist.";
+  }
+
+  if (trendMiniCards[1]) {
+    const heading = trendMiniCards[1].querySelector("b");
+    const paragraph = trendMiniCards[1].querySelector("p");
+    if (heading) heading.textContent = "Evidence provenance and limitations";
+    if (paragraph) paragraph.textContent =
+      "Decision status: " + (decision.status || "Unavailable") +
+      "; confidence: " + (decision.confidence || "Unavailable") +
+      "; available modules: " + (decision.available_modules || []).join(", ") +
+      "; missing modules: " + (decision.missing_modules || []).join(", ") +
+      ". Results are analytical evidence, not a certified engineering assessment.";
+  }
+
+    const floodProbability = prediction.probability_percent;
+
+    // Task 4: Update the risk cards only where a supported score exists.
+    setMetric(
+      "flood",
+      floodProbability != null ? Number(floodProbability).toFixed(1) + "%" : "N/A",
+      floodProbability != null
+        ? "Model estimate; not a certified flood probability"
+        : "Flood model score unavailable"
+    );
+    // Neutral status track: visible UI, never a risk score.
+    const showUnavailableTrack = (id) => {
+      const card = document.querySelector(`[data-metric="${id}"]`);
+      const bar = card && card.querySelector(".bar span");
+      if (!bar) return;
+      bar.style.width = "100%";
+      bar.style.background =
+        "repeating-linear-gradient(135deg, #555663 0px, #555663 5px, #33343e 5px, #33343e 10px)";
+      bar.style.opacity = "0.8";
+      bar.removeAttribute("aria-valuenow");
+      bar.title = "Status indicator only — no validated risk score available";
+    };
+
+    // Risk overview: show supported evidence, never convert measurements
+    // into risk percentages without a validated risk model.
+    const settledData = (index) =>
+      requests[index] && requests[index].status === "fulfilled"
+        ? requests[index].value
+        : null;
+
+    const findEvidence = (obj, wanted, depth = 0) => {
+      if (!obj || typeof obj !== "object" || depth > 5) return null;
+      for (const [key, value] of Object.entries(obj)) {
+        if (wanted.includes(key.toLowerCase()) &&
+            value !== null && value !== undefined &&
+            Number.isFinite(Number(value))) {
+          return Number(value);
+        }
+      }
+      for (const value of Object.values(obj)) {
+        const found = findEvidence(value, wanted, depth + 1);
+        if (found !== null) return found;
+      }
+      return null;
+    };
+
+    const climateData = settledData(4);
+    const terrainData = settledData(1);
+    const scenarioData = settledData(3);
+
+    const heavyRainDays = findEvidence(
+      climateData || scenarioData,
+      ["heavy_rain_days", "heavy_rain_day_count"]
+    );
+    const extremeRainDays = findEvidence(
+      climateData || scenarioData,
+      ["extreme_rain_days", "extreme_rain_day_count"]
+    );
+
+    if (heavyRainDays !== null) {
+      const extra = extremeRainDays !== null
+        ? `; ${extremeRainDays} extreme-rain days`
+        : "";
+      setMetric(
+        "rain",
+        `${heavyRainDays} days`,
+        `Historical climate indicator, not a risk percentage${extra}`
+      );
+      const rainCard = document.querySelector('[data-metric="rain"] .bar span');
+      if (rainCard) {
+        // Visualize observed days, not a probability or risk score.
+        // Scale is capped at 30 observed days for readability.
+        rainCard.style.width = `${Math.min(100, Math.max(0, heavyRainDays / 30 * 100))}%`;
+        rainCard.style.background = "linear-gradient(90deg, #ff4f9a, #b94dff)";
+        rainCard.title = `${heavyRainDays} observed heavy-rain days; bar is a visual count indicator, not risk`;
+      }
+    } else {
+      setMetric(
+        "rain",
+        "N/A",
+        climateData || scenarioData
+          ? "Climate data returned no usable heavy-rain day count"
+          : "Climate evidence unavailable; check Climate panel"
+      );
+    }
+
+    const terrainElevation = findEvidence(
+      terrainData, ["elevation_m", "elevation", "elevation_mean"]
+    );
+    const terrainSlope = findEvidence(
+      terrainData, ["slope_degrees", "slope_degree", "mean_slope"]
+    );
+
+    if (terrainElevation !== null || terrainSlope !== null) {
+      const details = [];
+      if (terrainElevation !== null) details.push(`Elevation: ${terrainElevation} m`);
+      if (terrainSlope !== null) details.push(`Slope: ${terrainSlope}°`);
+      setMetric(
+        "terrain",
+        "DATA",
+        `${details.join(" · ")}. Measurements only; no validated terrain-risk score.`
+      );
+      const terrainBar = document.querySelector('[data-metric="terrain"] .bar span');
+      if (terrainBar) terrainBar.style.width = "0%";
+    } else {
+      setMetric(
+        "terrain",
+        "N/A",
+        terrainData
+          ? "Terrain response contains no recognized elevation or slope field"
+          : "Terrain analysis unavailable; check Terrain panel"
+      );
+      showUnavailableTrack("terrain");
+    }
+
+    setMetric(
+      "cyclone",
+      "N/A",
+      "No dedicated cyclone risk model or validated score is connected"
+    );
+    showUnavailableTrack("cyclone");
+    setMetric(
+      "earthquake",
+      "N/A",
+      "No dedicated seismic risk model or validated score is connected"
+    );
+    showUnavailableTrack("earthquake");
+    setMetric(
+      "route",
+      "N/A",
+      "Choose an origin and destination to run route-specific analysis"
+    );
+    showUnavailableTrack("route");
+
+    // Task 5: Populate each section with its own results.
+    updateCards("climate", [
+      {
+        title: "Temperature",
+        value: "Mean " + formatNumber(climate.temperature_mean) +
+          " °C; min " + formatNumber(climate.temperature_min) +
+          " °C; max " + formatNumber(climate.temperature_max) + " °C."
+      },
+      {
+        title: "Precipitation",
+        value: "Total observed precipitation: " +
+          formatNumber(climate.precipitation_sum) +
+          " mm over " + (data.climate?.observation_count ?? "unavailable") +
+          " observations."
+      },
+      {
+        title: "Heavy-rain indicators",
+        value: "Heavy-rain days: " +
+          (climate.heavy_rain_days ?? "Unavailable") +
+          "; extreme-rain days: " +
+          (climate.extreme_rain_days ?? "Unavailable") + "."
+      },
+      {
+        title: "Data source & coverage",
+        value: (data.climate?.source || "Source unavailable") +
+          ". Historical summary; not a forecast."
+      }
+    ]);
+
+    const terrain = result.Terrain || {};
+    const elevation = terrain.elevation || {};
+    const slope = terrain.slope || {};
+    updateCards("terrain", [
+      {
+        title: "Elevation",
+        value: formatNumber(elevation.center_m) +
+          " m above sea level (remote estimate)."
+      },
+      {
+        title: "Slope / profile",
+        value: formatNumber(slope.estimated_percent) +
+          "% estimated slope."
+      },
+      {
+        title: "Landform",
+        value: slope.terrain_class || "Classification unavailable."
+      },
+      {
+        title: "Floodplain indicators",
+        value: "No dedicated floodplain classification returned by this terrain endpoint."
+      }
+    ]);
+
+    const infra = result.Infrastructure || {};
+    const counts = infra.counts || infra.infrastructure || {};
+    const countValue = (...keys) => {
+      for (const key of keys) {
+        if (counts[key] !== undefined && counts[key] !== null) return counts[key];
+        if (infra[key] !== undefined && infra[key] !== null) return infra[key];
+      }
+      return "Unavailable";
+    };
+    updateCards("infra", [
+      {
+        title: "Roads & highways",
+        value: "Motorways: " + countValue("motorways", "motorway_count") +
+          ". Coverage may be incomplete."
+      },
+      {
+        title: "Railways & airports",
+        value: "Railways: " + countValue("railways", "railway_count") +
+          "; stations: " + countValue("railway_stations", "railway_station_count") +
+          "; airports: " + countValue("airports", "airport_count") + "."
+      },
+      {
+        title: "Hospitals & emergency services",
+        value: "Hospitals: " + countValue("hospitals", "hospital_count") +
+          ". Verify local service availability."
+      },
+      {
+        title: "Power & utilities",
+        value: "Power substations: " +
+          countValue("power_substations", "substations", "substation_count") + "."
+      }
+    ]);
+
+    const scenario = result.Scenarios || {};
+    const scenarioList = scenario.scenarios || [];
+    const baseline = scenarioList.find(x => /baseline/i.test(x.label || x.scenario_id || "")) || scenarioList[0];
+    const increased = scenarioList.find(x => /increased/i.test(x.label || x.scenario_id || "")) || scenarioList[1];
+    const extreme = scenarioList.find(x => /extreme/i.test(x.label || x.scenario_id || "")) || scenarioList[2];
+    updateCards("hazards", [
+      {
+        title: "Cyclone evidence",
+        value: "No dedicated cyclone event assessment is connected in this result."
+      },
+      {
+        title: "Earthquake evidence",
+        value: "No dedicated seismic hazard score is connected in this result."
+      },
+      {
+        title: "Rainfall sensitivity",
+        value: [
+          baseline ? (baseline.label || "Baseline") + ": " +
+            (baseline.scenario_precipitation_mm ?? "Unavailable") + " mm" : null,
+          increased ? (increased.label || "Increased rainfall") + ": " +
+            (increased.scenario_precipitation_mm ?? "Unavailable") + " mm" : null,
+          extreme ? (extreme.label || "Extreme rainfall") + ": " +
+            (extreme.scenario_precipitation_mm ?? "Unavailable") + " mm" : null
+        ].filter(Boolean).join(" · ") || "Scenario details unavailable."
+      },
+      {
+        title: "Environmental context",
+        value: "Rainfall scenarios are hypothetical sensitivity tests, not forecasts."
+      }
+    ]);
+
+    // Remove legacy extra result tables from older versions, if present.
+    ["climateResults", "terrainResults", "infrastructureResults", "scenarioResults",
+     "reportResults", "apiResults"].forEach(id => {
+      const oldNode = $(id);
+      if (oldNode) oldNode.remove();
+    });
+
+    const statusText = value =>
+      value?.error ? "Request failed: " + value.error :
+      value?.status || "Request completed";
+
+    
+    // Batch 2: render actual API evidence without inventing unavailable values.
+    const asObj = v => v && typeof v === "object" ? v : {};
+    const firstValue = (obj, keys) => { for (const k of keys) if (obj[k] !== undefined && obj[k] !== null && obj[k] !== "") return obj[k]; return null; };
+    const pretty = v => typeof v === "number" ? (Number.isInteger(v) ? String(v) : v.toFixed(2)) : String(v);
+    const pickDeep = (obj, keys) => { const seen = new Set(), queue = [asObj(obj)]; while (queue.length) { const cur = queue.shift(); if (!cur || typeof cur !== "object" || seen.has(cur)) continue; seen.add(cur); const val = firstValue(cur, keys); if (val !== null) return val; Object.values(cur).forEach(v => { if (v && typeof v === "object") queue.push(v); }); } return null; };
+    const escapeHtml = value => String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const renderEvidence = (sectionId, cards, noticeId, noticeText) => { const grid = $(sectionId)?.querySelector(".grid4"); if (grid) grid.innerHTML = cards.map(([title, value, note]) => `<div class="mini"><b>${escapeHtml(title)}</b><p>${escapeHtml(value == null ? "Not available from this response" : String(value))}${note ? `<br><small>${escapeHtml(note)}</small>` : ""}</p></div>`).join(""); if ($(noticeId)) $(noticeId).textContent = noticeText; };
+    const renderTerrainEvidence = raw => { const t = asObj(raw); const elevation = pickDeep(t,["elevation_m","elevation","elevation_mean_m","mean_elevation_m"]); const min = pickDeep(t,["min_elevation_m","elevation_min","minimum_elevation_m"]); const max = pickDeep(t,["max_elevation_m","elevation_max","maximum_elevation_m"]); const range = pickDeep(t,["elevation_range_m","relief_m","relief"]); const slope = pickDeep(t,["slope_percent","slope_pct","mean_slope_percent","slope"]); const landform = pickDeep(t,["terrain_class","landform","slope_class","classification"]); const confidence = pickDeep(t,["confidence","data_confidence"]); const source = pickDeep(t,["source","data_source","provider"]); const val = (v,unit="") => v == null ? null : `${pretty(v)}${unit}`; renderEvidence("terrain",[["Elevation",val(elevation," m"),source ? `Source: ${source}` : ""],["Elevation range",min != null && max != null ? `${pretty(min)}-${pretty(max)} m` : val(range," m"),"Min/max or relief when returned"],["Slope / profile",val(slope,typeof slope === "number" ? "%" : ""),"Modelled terrain indicator"],["Landform / confidence",landform != null ? String(landform) : confidence,confidence != null && landform != null ? `Confidence: ${confidence}` : (source ? `Source: ${source}` : "Unavailable values remain blank")]],"terrainStatus",statusText(raw)+(source ? ` · Source: ${source}` : "")+(confidence ? ` · Confidence: ${confidence}` : "")); };
+    const renderInfrastructureEvidence = raw => { const x = asObj(raw); const counts = asObj(x.counts || x.infrastructure?.counts); const nearest = asObj(x.nearest || x.infrastructure?.nearest); const entries = Object.entries(counts); const countSummary = entries.length ? entries.map(([k,v]) => `${k.replace(/_/g," ")}: ${typeof v === "object" ? (v.count ?? v.total ?? JSON.stringify(v)) : v}`).join(" · ") : null; const nearestEntries = Object.entries(nearest).slice(0,4).map(([k,v]) => { if (v && typeof v === "object") { const name = v.name || v.type || k.replace(/_/g," "); const d = v.distance_km ?? v.distance ?? v.distance_m; return `${name}${d != null ? ` (${pretty(d)}${v.distance_m != null && v.distance_km == null ? " m" : " km"})` : ""}`; } return `${k.replace(/_/g," ")}: ${v}`; }); const total = firstValue(x,["total_infrastructure_assets","total_assets"]); const radius = firstValue(x,["radius_km"]); const confidence = firstValue(x,["confidence"]); const source = firstValue(x,["source"]); renderEvidence("infra",[["Mapped assets",total == null ? countSummary : pretty(total),radius != null ? `Search radius: ${pretty(radius)} km` : ""],["Asset categories",countSummary,"Counts returned by provider"],["Nearest assets",nearestEntries.length ? nearestEntries.join(" · ") : null,"Only assets included in API response"],["Source / confidence",[source,confidence].filter(Boolean).join(" · ") || null,"Coverage depends on provider data"]],"infraStatus",`${statusText(raw)} · Empty results do not prove infrastructure is absent.`); };
+    const renderClimateSummary = raw => { const c = asObj(raw); const s = asObj(c.climate || c.summary || c); const count = firstValue(c,["observation_count","observations_count"]); const mean = firstValue(s,["temperature_mean","mean_temperature"]); const min = firstValue(s,["temperature_min","min_temperature"]); const max = firstValue(s,["temperature_max","max_temperature"]); const rain = firstValue(s,["precipitation_sum","total_precipitation_mm","rainfall_total_mm"]); const heavy = firstValue(s,["heavy_rain_days"]); const extreme = firstValue(s,["extreme_rain_days"]); const grid = $("climate")?.querySelector(".grid4"); if (grid && (mean != null || rain != null || count != null)) grid.innerHTML = [["Temperature",mean == null ? "Not available" : `Mean ${pretty(mean)} °C; min ${min == null ? "N/A" : pretty(min)} °C; max ${max == null ? "N/A" : pretty(max)} °C`],["Precipitation",rain == null ? "Not available" : `${pretty(rain)} mm total${count != null ? ` across ${pretty(count)} observations` : ""}`],["Heavy-rain indicators",`Heavy-rain days: ${heavy == null ? "N/A" : pretty(heavy)}; extreme-rain days: ${extreme == null ? "N/A" : pretty(extreme)}`],["Data source & coverage",`${firstValue(c,["source"]) || "Source recorded in response"}${c.period?.start_date ? ` · ${c.period.start_date} to ${c.period.end_date}` : ""}`]].map(([a,b])=>`<div class="mini"><b>${escapeHtml(a)}</b><p>${escapeHtml(b)}</p></div>`).join(""); };
+
+    renderTerrainEvidence(result.Terrain);
+    renderInfrastructureEvidence(result.Infrastructure);
+    renderClimateSummary(result.Climate);
+$("terrainStatus").textContent = statusText(result.Terrain);
+    $("infraStatus").textContent = $("infraStatus").textContent || statusText(result.Infrastructure);
+
+    const routeStatus = $("routeStatus");
+    if (routeStatus) routeStatus.textContent =
+      "Route analysis is available; choose origin and destination to request a route.";
+
+    // Task 6: Make the summary/report reflect the current analysis.
+    const reportData = {
+      generated_at: new Date().toISOString(),
+    route: window.nexoraLatestRoute || null,
+      project_type: $("project").value,
+      site_label: $("siteName").value || "Selected site",
+      latitude: site.lat,
+      longitude: site.lng,
+      analysis_radius_km: site.radius,
+      plot_boundary_coordinates: points.map(([latitude, longitude]) => ({latitude, longitude})),
+      plot_area_km2: plotAreaKm2(),
+      plot_boundary_status: points.length >= 3 ? "DRAWN_NOT_SURVEY_VERIFIED" : "NOT_PROVIDED",
+      soil_test_notes: $("soilNotes")?.value || "",
+      soil_file_selected_name: $("soilFile")?.files?.[0]?.name || null,
+      soil_file_uploaded: false,
+      soil_input_status: $("soilFile")?.files?.[0] ? "SELECTED_LOCALLY_NOT_UPLOADED" : "NO_FILE_SELECTED",
+      decision_status: decision.status || "Unavailable",
+      confidence: decision.confidence || "Unavailable",
+      evidence_count: decision.evidence_count ?? 0,
+      available_modules: decision.available_modules || [],
+      missing_modules: decision.missing_modules || [],
+      results: result,
+      limitation: "Analytical results are not a certified engineering assessment."
+    };
+    window.nexoraLatestReport = reportData;
+
+    $("summary").textContent =
+      ($("siteName").value || "Selected site") + " · " +
+      $("project").value + " · " + site.radius + " km radius.";
+
+    const evidence = document.querySelector("#report .list li:last-child b");
+    if (evidence) {
+      evidence.textContent =
+        (decision.status || "Data status unavailable") +
+        " · " + (decision.confidence || "Confidence unavailable") +
+        " · " + (decision.evidence_count ?? 0) + " evidence items";
+    }
+
+    window.nexoraLatestReport = reportData;
+
+    sync();
+  } catch (error) {
+    const box = ensureOutput("apiResults", "site");
+    box.textContent = "Analysis failed: " + error.message +
+      "\nCheck that the backend is running at http://127.0.0.1:8000.";
+  } finally {
+    button.disabled = false;
+    button.textContent = "Run Intelligence →";
+  }
+};
+
+$("export").onclick = () => {
+  sync();
+  const data = {
+    product: "NEXORA",
+    status: window.nexoraLatestReport ? "analysis_available" : "site_selected_analysis_not_run",
+    site: {
+      label: $("siteName").value || null,
+      project_type: $("project").value || null,
+      latitude: site.lat,
+      longitude: site.lng,
+      analysis_radius_km: site.radius,
+      plot_boundary_coordinates: points.map(([latitude, longitude]) => ({latitude, longitude})),
+      plot_area_km2: plotAreaKm2(),
+      plot_boundary_status: points.length >= 3 ? "DRAWN_NOT_SURVEY_VERIFIED" : "NOT_PROVIDED",
+      soil_test_notes: $("soilNotes")?.value || "",
+      soil_file_selected_name: $("soilFile")?.files?.[0]?.name || null,
+      soil_file_uploaded: false,
+      soil_input_status: $("soilFile")?.files?.[0] ? "SELECTED_LOCALLY_NOT_UPLOADED" : "NO_FILE_SELECTED"
+    },
+    analysis: window.nexoraLatestReport || null,
+    exported_at: new Date().toISOString()
+  };
+  const url = URL.createObjectURL(
+    new Blob([JSON.stringify(data, null, 2)], {type: "application/json"})
+  );
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "nexora-site-intelligence.json";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-go]").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.go).scrollIntoView({behavior:"smooth",block:"start"})});sync()})();
+</script>
+
+
+<script id="NEXORA_REPORT_BATCH_V3">
+(() => {
+  function installNexoraReports() {
+    const $ = id => document.getElementById(id);
+    let panel = $("nexoraEvidencePanel");
+
+    const headings = [...document.querySelectorAll("h1,h2,h3,h4")];
+    let heading = headings.find(el =>
+      /site\s+suitability/i.test(el.textContent) &&
+      /report/i.test(el.textContent)
+    );
+    if (!heading) {
+      heading = headings.find(el =>
+        /suitability/i.test(el.textContent) &&
+        /comparison/i.test(el.textContent)
+      );
+    }
+    if (!heading) {
+      console.error("NEXORA reports: could not find the existing report heading.");
+      return;
+    }
+
+    const header = heading.closest(".head") || heading;
+    const section = heading.closest("section.card") ||
+                    heading.closest("section") ||
+                    heading.closest(".card") ||
+                    heading.parentElement.parentElement;
+
+    if (!panel) {
+      panel = document.createElement("div");
+      panel.id = "nexoraEvidencePanel";
+      panel.style.cssText =
+        "margin:14px 0;padding:18px;border:1px solid #49404d;" +
+        "border-radius:12px;background:#111118;color:inherit;";
+      panel.innerHTML = `
+        <h3>NEXORA decision screening</h3>
+        <p id="nexoraSuitabilityStatus" aria-live="polite">Checking site evidence…</p>
+        <p id="nexoraSuitabilityDetails" style="color:#aaaab9"></p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0">
+          <button type="button" class="btn" id="nexoraRefreshEvidence">Refresh evidence</button>
+          <button type="button" class="btn" id="nexoraAddCandidate">Save candidate for comparison</button>
+          <button type="button" class="btn" id="nexoraClearCandidates">Clear candidates</button>
+          <button type="button" class="btn" id="nexoraExportJSON">Export site summary (JSON)</button>
+          <button type="button" class="btn" id="nexoraExportPDF">Print / Save as PDF</button>
+        </div>
+        <h4>Candidate-site comparison</h4>
+        <p id="nexoraCandidateStatus" style="color:#aaaab9">No candidates saved yet.</p>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;text-align:left">
+            <thead><tr>
+              <th style="padding:8px;border-bottom:1px solid #383844">Site</th>
+              <th style="padding:8px;border-bottom:1px solid #383844">Project</th>
+              <th style="padding:8px;border-bottom:1px solid #383844">Coordinates</th>
+              <th style="padding:8px;border-bottom:1px solid #383844">Flood</th>
+              <th style="padding:8px;border-bottom:1px solid #383844">Heavy rain</th>
+              <th style="padding:8px;border-bottom:1px solid #383844">Boundary</th>
+            </tr></thead><tbody id="nexoraCandidateRows"></tbody>
+          </table>
+        </div>
+        <p style="font-size:12px;color:#aaaab9">
+          Preliminary screening only. Missing evidence is not zero risk.
+          Candidates are stored in this browser, not shared through the database.
+        </p>`;
+    }
+
+    // Place the panel directly after the section heading, not at the page bottom.
+    if (header.parentElement) {
+      header.insertAdjacentElement("afterend", panel);
+    } else {
+      section.insertBefore(panel, section.firstChild);
+    }
+
+    const metric = id => {
+      const card = document.querySelector('[data-metric="' + id + '"]');
+      const raw = card?.querySelector(".value")?.textContent.trim() || "";
+      return /^(n\/a|—|--|-%)$/i.test(raw) || !raw
+        ? null : raw;
+    };
+
+    const getSite = () => {
+      const latText = $("lat")?.value.trim() || "";
+      const lngText = $("lng")?.value.trim() || "";
+      const lat = Number(latText), lng = Number(lngText);
+      const radius = Number($("radius")?.value);
+      return {
+        name: $("siteName")?.value.trim() || "Candidate Site",
+        project: $("project")?.value || "Not selected",
+        latitude: latText && Number.isFinite(lat) ? lat : null,
+        longitude: lngText && Number.isFinite(lng) ? lng : null,
+        analysis_radius_km: Number.isFinite(radius) ? radius : null,
+        flood: metric("flood"),
+        heavy_rain: metric("rain"),
+        plot_boundary_status: $("rPlot")?.textContent.trim() || "Unavailable",
+        plot_boundary_coordinates: Array.isArray(window.nexoraPlotBoundaryCoordinates)
+          ? window.nexoraPlotBoundaryCoordinates : [],
+        captured_at: new Date().toISOString()
+      };
+    };
+
+    const refresh = () => {
+      const s = getSite(), missing = [];
+      if (s.latitude === null || s.longitude === null) missing.push("coordinates");
+      if (s.project === "Not selected") missing.push("project type");
+      if (!s.flood) missing.push("supported flood result");
+      if (!s.heavy_rain) missing.push("supported rainfall result");
+      if (/not drawn|not provided|unavailable/i.test(s.plot_boundary_status))
+        missing.push("confirmed plot boundary");
+
+      $("nexoraSuitabilityStatus").textContent = missing.length
+        ? "DATA LIMITED — suitability cannot yet be determined."
+        : "Evidence available for preliminary screening; professional approval is not established.";
+      $("nexoraSuitabilityDetails").textContent =
+        "Site: " + s.name + " · Project: " + s.project +
+        " · Flood: " + (s.flood || "Unavailable") +
+        " · Heavy rain: " + (s.heavy_rain || "Unavailable") +
+        " · Missing or unconfirmed: " + (missing.join(", ") || "None of these checks") + ".";
+      return s;
+    };
+
+    const key = "nexora_report_candidates_v3";
+    const load = () => {
+      try {
+        const value = JSON.parse(localStorage.getItem(key) || "[]");
+        return Array.isArray(value) ? value : [];
+      } catch (_) { return []; }
+    };
+    const render = () => {
+      const list = load(), body = $("nexoraCandidateRows");
+      body.replaceChildren();
+      $("nexoraCandidateStatus").textContent =
+        list.length + " candidate site(s) saved in this browser.";
+      for (const c of list) {
+        const tr = document.createElement("tr");
+        const values = [
+          c.name, c.project,
+          c.latitude == null || c.longitude == null
+            ? "Unavailable" : c.latitude + ", " + c.longitude,
+          c.flood || "Unavailable", c.heavy_rain || "Unavailable",
+          c.plot_boundary_status || "Unavailable"
+        ];
+        for (const value of values) {
+          const td = document.createElement("td");
+          td.style.cssText = "padding:8px;border-bottom:1px solid #292934";
+          td.textContent = String(value ?? "Unavailable");
+          tr.appendChild(td);
+        }
+        body.appendChild(tr);
+      }
+    };
+
+    $("nexoraRefreshEvidence").onclick = refresh;
+    $("nexoraAddCandidate").onclick = () => {
+      const s = refresh();
+      if (s.latitude === null || s.longitude === null || s.project === "Not selected") {
+        alert("Choose a project type and valid coordinates first.");
+        return;
+      }
+      const list = load();
+      if (list.some(c => c.latitude === s.latitude &&
+                         c.longitude === s.longitude && c.project === s.project)) {
+        alert("This site and project type are already saved.");
+        return;
+      }
+      list.push(s);
+      try { localStorage.setItem(key, JSON.stringify(list)); render(); }
+      catch (_) { alert("Browser storage unavailable; candidate was not saved."); }
+    };
+    $("nexoraClearCandidates").onclick = () => {
+      if (confirm("Clear candidate sites saved in this browser?")) {
+        localStorage.removeItem(key);
+        render();
+      }
+    };
+    $("nexoraExportJSON").onclick = () => {
+      const payload = {
+        application: "NEXORA Site Intelligence",
+        site: refresh(),
+        candidates: load(),
+        report_note: "Screening evidence only. Missing values are unavailable, not zero.",
+        exported_at: new Date().toISOString()
+      };
+      const url = URL.createObjectURL(new Blob(
+        [JSON.stringify(payload, null, 2)], {type:"application/json"}
+      ));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "nexora-site-report.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    };
+    $("nexoraExportPDF").onclick = () => { refresh(); window.print(); };
+
+    refresh();
+    render();
+    console.info("NEXORA reports panel ready.");
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", installNexoraReports, {once:true});
+  } else {
+    installNexoraReports();
+  }
+})();
+</script>
+
+
+<script id="NEXORA_ROUTE_UI_V1">
+(() => {
+  const installRouteUI = () => {
+    if (document.getElementById("nexoraRoutePanel")) return;
+
+    const headings = [...document.querySelectorAll("h1,h2,h3,h4,h5,h6")];
+    const heading = headings.find(el =>
+      /^routes?(\s+intelligence)?$/i.test(el.textContent.trim()) ||
+      /^route intelligence$/i.test(el.textContent.trim())
+    );
+
+    const panel = document.createElement("section");
+    panel.id = "nexoraRoutePanel";
+    panel.style.cssText =
+      "margin:18px 0;padding:20px;border:1px solid #45404a;" +
+      "border-radius:14px;background:#151319;color:#f4f1f5;";
+    panel.innerHTML = `
+      <h3 style="margin-top:0">NEXORA Route Intelligence</h3>
+      <p style="color:#bcb5c3">Calculate a road route between two coordinates using the live NEXORA route API.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px">
+        <label>Origin latitude
+          <input id="nrxOriginLat" type="number" step="any" value="16.723371" style="display:block;width:100%;box-sizing:border-box;margin-top:6px;padding:10px">
+        </label>
+        <label>Origin longitude
+          <input id="nrxOriginLon" type="number" step="any" value="74.543343" style="display:block;width:100%;box-sizing:border-box;margin-top:6px;padding:10px">
+        </label>
+        <label>Destination latitude
+          <input id="nrxDestLat" type="number" step="any" value="16.768287" style="display:block;width:100%;box-sizing:border-box;margin-top:6px;padding:10px">
+        </label>
+        <label>Destination longitude
+          <input id="nrxDestLon" type="number" step="any" value="74.543343" style="display:block;width:100%;box-sizing:border-box;margin-top:6px;padding:10px">
+        </label>
+      </div>
+      <button id="nrxRunRoute" type="button" style="margin-top:14px;padding:11px 16px;cursor:pointer">Analyse road route</button>
+      <p id="nrxRouteStatus" role="status" style="color:#c9c0ce">Enter coordinates and run the analysis.</p>
+      <div id="nrxRouteResults" aria-live="polite"></div>
+    `;
+
+    if (heading) {
+      const section = heading.closest("section") || heading.parentElement;
+      section.appendChild(panel);
+    } else {
+      const main = document.querySelector("main") || document.body;
+      main.appendChild(panel);
+      console.warn("NEXORA: Routes heading not found; route panel added at page end.");
+    }
+
+    const $ = id => document.getElementById(id);
+    $("nrxRunRoute").addEventListener("click", async () => {
+      const originLat = Number($("nrxOriginLat").value);
+      const originLon = Number($("nrxOriginLon").value);
+      const destLat = Number($("nrxDestLat").value);
+      const destLon = Number($("nrxDestLon").value);
+      const values = [originLat, originLon, destLat, destLon];
+
+      if (values.some(v => !Number.isFinite(v)) ||
+          Math.abs(originLat) > 90 || Math.abs(destLat) > 90 ||
+          Math.abs(originLon) > 180 || Math.abs(destLon) > 180) {
+        $("nrxRouteStatus").textContent = "Enter valid latitude and longitude values.";
+        $("nrxRouteResults").replaceChildren();
+        return;
+      }
+
+      const button = $("nrxRunRoute");
+      button.disabled = true;
+      $("nrxRouteStatus").textContent = "Requesting live route analysis…";
+      $("nrxRouteResults").replaceChildren();
+
+      const query = new URLSearchParams({
+        origin_latitude: originLat,
+        origin_longitude: originLon,
+        destination_latitude: destLat,
+        destination_longitude: destLon
+      });
+
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/analyze/route?" + query.toString()
+        );
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail ? JSON.stringify(data.detail) : "HTTP " + response.status);
+        }
+
+        const result = data.analysis || data;
+        if (data.status === "error" || result.status === "error") {
+          throw new Error(result.message || data.message || "Route analysis failed.");
+        }
+
+        const distance = Number(result.distance_km);
+        const duration = Number(result.travel_time_min);
+        if (!Number.isFinite(distance) || !Number.isFinite(duration)) {
+          throw new Error("The API response did not contain usable distance and travel-time values.");
+        }
+
+        const geometry = result.geometry && result.geometry.coordinates;
+        const pointCount = Array.isArray(geometry) ? geometry.length : 0;
+
+        $("nrxRouteStatus").textContent = "Route analysis completed.";
+        const box = document.createElement("div");
+        box.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:12px";
+
+        [
+          ["Road distance", distance.toFixed(2) + " km"],
+          ["Estimated travel time", duration.toFixed(1) + " min"],
+          ["Route geometry points", String(pointCount)]
+        ].forEach(([label, value]) => {
+          const card = document.createElement("div");
+          card.style.cssText = "padding:14px;border:1px solid #45404a;border-radius:10px";
+          const title = document.createElement("div");
+          title.style.cssText = "font-size:12px;color:#bcb5c3;margin-bottom:8px";
+          title.textContent = label;
+          const metric = document.createElement("strong");
+          metric.style.cssText = "font-size:20px";
+          metric.textContent = value;
+          card.append(title, metric);
+          box.appendChild(card);
+        });
+
+        const note = document.createElement("p");
+        note.style.cssText = "font-size:12px;color:#bcb5c3;margin-top:12px";
+        note.textContent =
+          "Travel time is an estimate. This result is route information, not a validated route-risk or logistics suitability score.";
+        $("nrxRouteResults").replaceChildren(box, note);
+      } catch (error) {
+        $("nrxRouteStatus").textContent = "Route analysis could not be completed: " + error.message;
+      } finally {
+        button.disabled = false;
+      }
+    });
+    console.info("NEXORA route UI installed.");
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", installRouteUI, {once:true});
+  } else {
+    installRouteUI();
+  }
+})();
+</script>
+
+
+<!-- NEXORA_MAP_ANALYSIS_INTEGRATION_V1 -->
+<style>
+#nx-live-workspace{margin:24px 0;padding:22px;border:1px solid #39303d;border-radius:18px;background:#101014;color:#f5f1f7;font:14px/1.5 system-ui,sans-serif}
+#nx-live-workspace *{box-sizing:border-box}
+#nx-live-workspace h2,#nx-live-workspace h3{margin:0 0 9px}
+#nx-live-workspace .nx-muted{color:#aaa3b1}
+#nx-live-workspace .nx-toolbar,#nx-live-workspace .nx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:14px}
+#nx-live-workspace .nx-card{border:1px solid #39303d;border-radius:12px;padding:14px;min-width:0;background:#17151b}
+#nx-live-workspace label{display:block;color:#c9c1ce;font-size:12px;margin-bottom:5px}
+#nx-live-workspace input{width:100%;padding:10px;border:1px solid #49404e;border-radius:8px;background:#0c0b0f;color:white}
+#nx-live-workspace button{padding:10px 13px;border-radius:9px;border:1px solid #ed4caa;background:#ed4caa;color:#160b13;font-weight:700;cursor:pointer}
+#nx-live-workspace button.nx-secondary{background:#201b24;color:#f5f1f7;border-color:#514456}
+#nx-live-workspace button:disabled{opacity:.55;cursor:wait}
+#nx-live-workspace pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:340px;overflow:auto;font-size:12px;color:#e7dfe9;margin:8px 0 0}
+#nx-live-workspace .nx-status{margin-top:12px;padding:10px;border-radius:8px;background:#211b25}
+#nx-live-workspace .nx-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+#nx-live-workspace .nx-tag{font-size:11px;color:#f39bce;text-transform:uppercase;letter-spacing:.08em}
+@media print{#nx-live-workspace button{display:none}#nx-live-workspace{background:white;color:black;border:1px solid #aaa}#nx-live-workspace .nx-card{background:white;color:black;border:1px solid #aaa}#nx-live-workspace pre{color:black;max-height:none;overflow:visible}}
+</style>
+
+<section id="nx-live-workspace">
+  <div class="nx-tag">NEXORA · Live analysis workspace</div>
+  <h2>Map &amp; Site Intelligence</h2>
+  <p class="nx-muted">Run location-based analysis against the FastAPI backend. Results show returned source evidence; unavailable data is never treated as zero risk.</p>
+
+  <div class="nx-toolbar">
+    <div class="nx-card">
+      <label for="nx-lat">Site latitude</label>
+      <input id="nx-lat" type="number" step="any" value="16.723371">
+    </div>
+    <div class="nx-card">
+      <label for="nx-lon">Site longitude</label>
+      <input id="nx-lon" type="number" step="any" value="74.543343">
+    </div>
+  </div>
+  <div class="nx-actions">
+    <button id="nx-use-boundary" class="nx-secondary" type="button">Use selected map plot</button>
+    <button id="nx-run" type="button">Run site analysis</button>
+    <button id="nx-export" class="nx-secondary" type="button">Export results JSON</button>
+    <button id="nx-print" class="nx-secondary" type="button">Print / Save PDF</button>
+  </div>
+  <div id="nx-status" class="nx-status" role="status">Ready. Select a plot on the map or enter site coordinates, then run analysis.</div>
+  <div id="nx-summary" class="nx-grid"></div>
+  <div id="nx-results" class="nx-grid"></div>
+  <div class="nx-card" style="margin-top:12px">
+    <h3>Evidence &amp; limitations</h3>
+    <p id="nx-notes" class="nx-muted">No analysis has been run in this workspace yet.</p>
+  </div>
+</section>
+
+<script>
+(() => {
+  "use strict";
+  const root = document.getElementById("nx-live-workspace");
+  if (!root || root.dataset.ready === "1") return;
+  root.dataset.ready = "1";
+
+  const api = "http://127.0.0.1:8000";
+  const $ = id => document.getElementById(id);
+  const state = { site: null, results: {}, runAt: null };
+
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, ch => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[ch]));
+  }
+  function showStatus(message) { $("nx-status").textContent = message; }
+  function site() {
+    const latitude = Number($("nx-lat").value);
+    const longitude = Number($("nx-lon").value);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude) ||
+        latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+      throw new Error("Enter valid latitude (−90 to 90) and longitude (−180 to 180).");
+    }
+    return { latitude, longitude };
+  }
+  function getBoundaryPoints(raw) {
+    if (!raw) return [];
+    if (typeof raw === "string") {
+      try { raw = JSON.parse(raw); } catch (_) { return []; }
+    }
+    if (!Array.isArray(raw) && typeof raw === "object") {
+      raw = raw.coordinates || raw.points || raw.path || raw.boundary || raw.vertices || [];
+    }
+    if (!Array.isArray(raw)) return [];
+    if (raw.length && !Array.isArray(raw[0]) && typeof raw[0] === "object" &&
+        !("lat" in raw[0] || "latitude" in raw[0])) {
+      return getBoundaryPoints(raw[0]);
+    }
+    const points = [];
+    for (const p of raw) {
+      let lat, lon;
+      if (Array.isArray(p) && p.length >= 2) {
+        // GeoJSON coordinates are [longitude, latitude].
+        lon = Number(p[0]); lat = Number(p[1]);
+      } else if (p && typeof p === "object") {
+        lat = Number(p.latitude ?? p.lat);
+        lon = Number(p.longitude ?? p.lng ?? p.lon ?? p.long);
+      }
+      if (Number.isFinite(lat) && Number.isFinite(lon) &&
+          Math.abs(lat) <= 90 && Math.abs(lon) <= 180) points.push({lat, lon});
+    }
+    return points;
+  }
+  function polygonAreaKm2(points) {
+    if (points.length < 3) return null;
+    const R = 6371.0088;
+    let sum = 0;
+    for (let i=0; i<points.length; i++) {
+      const a = points[i], b = points[(i+1) % points.length];
+      sum += (b.lon-a.lon) * Math.PI/180 *
+        (2 + Math.sin(a.lat*Math.PI/180) + Math.sin(b.lat*Math.PI/180));
+    }
+    return Math.abs(sum * R * R / 2);
+  }
+  function applyBoundary() {
+    const candidates = [
+      window.nexoraPlotBoundaryCoordinates,
+      window.nexoraPlotBoundary,
+      window.nexoraSelectedPlotBoundary
+    ];
+    let points = [];
+    for (const candidate of candidates) {
+      points = getBoundaryPoints(candidate);
+      if (points.length >= 3) break;
+    }
+    if (points.length < 3) {
+      showStatus("No completed map polygon was detected. Finish drawing the plot boundary first, or enter its coordinates manually.");
+      return;
+    }
+    const lat = points.reduce((s,p)=>s+p.lat,0)/points.length;
+    const lon = points.reduce((s,p)=>s+p.lon,0)/points.length;
+    $("nx-lat").value = lat.toFixed(6);
+    $("nx-lon").value = lon.toFixed(6);
+    const area = polygonAreaKm2(points);
+    showStatus("Using map polygon: " + points.length + " boundary vertices; approximate area " +
+      (area == null ? "unavailable" : area.toFixed(4) + " km²") +
+      ". Analysis APIs currently receive the polygon centroid, not the full polygon geometry.");
+  }
+  async function getJson(path) {
+    const response = await fetch(api + path, {headers: {"Accept":"application/json"}});
+    const text = await response.text();
+    let data;
+    try { data = JSON.parse(text); } catch (_) { data = {raw_response:text.slice(0,3000)}; }
+    if (!response.ok) throw new Error("HTTP " + response.status + ": " +
+      (data.detail || data.message || text.slice(0,180)));
+    return data;
+  }
+  function query(path, params) {
+    return path + "?" + new URLSearchParams(params).toString();
+  }
+  function valueLines(obj, depth=0) {
+    if (obj === null || obj === undefined) return "Not provided";
+    if (typeof obj !== "object") return String(obj);
+    if (Array.isArray(obj)) return obj.length ? JSON.stringify(obj) : "No records returned";
+    return Object.entries(obj).map(([k,v]) => {
+      if (v && typeof v === "object") {
+        const val = Array.isArray(v) ? (v.length ? JSON.stringify(v) : "[]") : "{…}";
+        return k + ": " + val;
+      }
+      return k + ": " + (v === null ? "null" : String(v));
+    }).join("\n");
+  }
+  function render() {
+    const entries = Object.entries(state.results);
+    $("nx-summary").innerHTML = entries.map(([name,item]) => {
+      const ok = item.ok;
+      let detail = "Analysis unavailable";
+      if (ok) {
+        const d = item.data || {};
+        detail = d.risk_status ?? d.status ?? d.interpretation ??
+          d.terrain_class ?? d.event_count ?? d.count ?? "Response received";
+        if (typeof detail === "object") detail = JSON.stringify(detail);
+      } else detail = item.error;
+      return '<div class="nx-card"><div class="nx-tag">'+escapeHtml(name)+'</div><h3>'+
+        (ok ? "Response received" : "Unavailable")+'</h3><p>'+escapeHtml(detail)+'</p></div>';
+    }).join("");
+    $("nx-results").innerHTML = entries.map(([name,item]) =>
+      '<div class="nx-card"><h3>'+escapeHtml(name)+'</h3><div class="nx-muted">'+
+      (item.ok ? "HTTP response successfully received" : "Request failed")+
+      '</div><pre>'+escapeHtml(valueLines(item.ok ? item.data : {error:item.error}))+'</pre></div>'
+    ).join("");
+    const failures = entries.filter(([,x])=>!x.ok).map(([n])=>n);
+    $("nx-notes").textContent =
+      "Site coordinates: " + JSON.stringify(state.site) +
+      ". Successful modules: " + entries.filter(([,x])=>x.ok).length + "/" + entries.length +
+      (failures.length ? ". Unavailable modules: " + failures.join(", ") + "." : ". All requested modules returned responses.") +
+      " Results are point-based API responses unless an endpoint explicitly states otherwise. Modelled soil data is not a laboratory test; missing nearby flood or infrastructure records do not prove absence of risk or facilities.";
+  }
+  async function runAnalysis() {
+    let s;
+    try { s = site(); } catch (e) { showStatus(e.message); return; }
+    state.site = s;
+    state.results = {};
+    state.runAt = new Date().toISOString();
+    $("nx-run").disabled = true;
+    showStatus("Running live site intelligence and individual analyses…");
+    const p = {latitude:s.latitude, longitude:s.longitude};
+    const tasks = [
+      ["Site intelligence", query("/api/site/intelligence", p)],
+      ["Flood history", query("/api/analyze/flood", p)],
+      ["Climate", query("/analyze/climate", p)],
+      ["Terrain", query("/api/analyze/terrain", p)],
+      ["Infrastructure", query("/api/analyze/infrastructure", p)],
+      ["Soil", query("/api/soil/geographic", p)]
+    ];
+    // Use the route endpoint as a separate capability check. These defaults
+    // are a sample route, not a route from the actual plot to a real destination.
+    const origin = {
+      origin_latitude:s.latitude, origin_longitude:s.longitude,
+      destination_latitude:s.latitude + 0.045,
+      destination_longitude:s.longitude
+    };
+    tasks.push(["Sample route", query("/api/analyze/route", origin)]);
+
+    const results = await Promise.all(tasks.map(async ([name,path]) => {
+      try { return [name,{ok:true,data:await getJson(path),path}]; }
+      catch (e) { return [name,{ok:false,error:e.message,path}]; }
+    }));
+    state.results = Object.fromEntries(results);
+    render();
+    $("nx-run").disabled = false;
+    const succeeded = results.filter(([,v])=>v.ok).length;
+    showStatus("Analysis finished: " + succeeded + " of " + results.length +
+      " modules returned successfully. Run time: " + new Date(state.runAt).toLocaleString() +
+      ". Review each module for data source, coverage and confidence.");
+    try {
+      localStorage.setItem("nexora_latest_analysis_v1", JSON.stringify({
+        run_at:state.runAt, site:state.site, results:state.results
+      }));
+    } catch (_) {}
+  }
+  function exportJson() {
+    if (!state.runAt) {
+      showStatus("Run the analysis before exporting results.");
+      return;
+    }
+    const blob = new Blob([JSON.stringify({
+      product:"NEXORA", exported_at:new Date().toISOString(),
+      run_at:state.runAt, site:state.site, results:state.results
+    }, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "nexora-site-analysis-" + new Date().toISOString().slice(0,10) + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+  $("nx-use-boundary").addEventListener("click", applyBoundary);
+  $("nx-run").addEventListener("click", runAnalysis);
+  $("nx-export").addEventListener("click", exportJson);
+  $("nx-print").addEventListener("click", () => window.print());
+
+  // Restore the last browser-side snapshot for convenience; new runs replace it.
+  try {
+    const saved = JSON.parse(localStorage.getItem("nexora_latest_analysis_v1") || "null");
+    if (saved && saved.results) {
+      state.site = saved.site; state.results = saved.results; state.runAt = saved.run_at;
+      render();
+      showStatus("Previous browser-saved analysis loaded. Run analysis again for fresh API responses.");
+    }
+  } catch (_) {}
+})();
+</script>
+
+
+<!-- NEXORA_DECISION_INTELLIGENCE_V1 -->
+<style>
+#nx-decision{margin:24px 0;padding:22px;border:1px solid #493347;border-radius:18px;background:#100e13;color:#f7f1f7;font:14px/1.5 system-ui,sans-serif}
+#nx-decision *{box-sizing:border-box}
+#nx-decision h2,#nx-decision h3{margin:0 0 8px}
+#nx-decision .nd-muted{color:#b6aab9}
+#nx-decision .nd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
+#nx-decision .nd-card{padding:14px;border:1px solid #443744;border-radius:12px;background:#19151d;min-width:0}
+#nx-decision .nd-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#f19bcf}
+#nx-decision .nd-score{font-size:34px;font-weight:750;line-height:1.25;margin:6px 0}
+#nx-decision .nd-track{height:7px;background:#382c3b;border-radius:9px;overflow:hidden;margin:8px 0}
+#nx-decision .nd-fill{height:100%;background:#ed65b5;width:0}
+#nx-decision button{padding:10px 13px;border-radius:9px;border:1px solid #ed4caa;background:#ed4caa;color:#160b13;font-weight:700;cursor:pointer}
+#nx-decision button:disabled{opacity:.6;cursor:wait}
+#nx-decision .nd-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+#nx-decision pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:300px;overflow:auto}
+#nx-decision .nd-status{margin-top:12px;padding:10px;background:#211b25;border-radius:8px}
+@media print{#nx-decision button{display:none}#nx-decision,#nx-decision .nd-card{background:white;color:black;border:1px solid #aaa}#nx-decision .nd-muted{color:#333}}
+</style>
+<section id="nx-decision">
+  <div class="nd-label">NEXORA · Decision Intelligence</div>
+  <h2>Explainable Site Screening</h2>
+  <p class="nd-muted">Combines returned analysis evidence into a transparent preliminary screening assessment. This is not a certified engineering, environmental, legal or investment approval.</p>
+  <div class="nd-actions">
+    <button id="nd-run" type="button">Assess current site</button>
+    <button id="nd-export" type="button">Export decision JSON</button>
+    <button id="nd-print" type="button">Print / Save PDF</button>
+  </div>
+  <div id="nd-status" class="nd-status" role="status">Ready to assess the selected site.</div>
+  <div id="nd-overview" class="nd-grid"></div>
+  <h3 style="margin-top:20px">Factor assessment</h3>
+  <div id="nd-factors" class="nd-grid"></div>
+  <h3 style="margin-top:20px">Recommended next actions</h3>
+  <div id="nd-actions-list" class="nd-grid"></div>
+  <div class="nd-card" style="margin-top:14px">
+    <h3>Decision rationale and limitations</h3>
+    <div id="nd-rationale" class="nd-muted">Run an assessment to see evidence, uncertainty and reasons behind the recommendations.</div>
+  </div>
+</section>
+<script>
+(() => {
+  "use strict";
+  const panel = document.getElementById("nx-decision");
+  if (!panel || panel.dataset.ready === "1") return;
+  panel.dataset.ready = "1";
+  const $ = id => document.getElementById(id);
+  const api = "http://127.0.0.1:8000";
+  let lastReport = null;
+
+  function esc(v) {
+    return String(v ?? "").replace(/[&<>"']/g, c =>
+      ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+  function num(obj, keys) {
+    for (const key of keys) {
+      const v = key.split(".").reduce((a,k) => a == null ? undefined : a[k], obj);
+      if (v !== null && v !== undefined && v !== "" && Number.isFinite(Number(v))) return Number(v);
+    }
+    return null;
+  }
+  function findText(obj, keys) {
+    for (const key of keys) {
+      const v = key.split(".").reduce((a,k) => a == null ? undefined : a[k], obj);
+      if (typeof v === "string" && v.trim()) return v;
+    }
+    return null;
+  }
+  function flatten(obj, depth=0) {
+    if (obj == null || depth > 5) return "";
+    if (typeof obj === "string" || typeof obj === "number" || typeof obj === "boolean") return String(obj);
+    if (Array.isArray(obj)) return obj.map(x=>flatten(x,depth+1)).join(" ");
+    return Object.entries(obj).map(([k,v])=>k+" "+flatten(v,depth+1)).join(" ");
+  }
+  function coords() {
+    const lat = Number(document.getElementById("nx-lat")?.value ?? 16.723371);
+    const lon = Number(document.getElementById("nx-lon")?.value ?? 74.543343);
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) ||
+        Math.abs(lat)>90 || Math.abs(lon)>180) throw Error("Valid site coordinates are required.");
+    return {latitude:lat, longitude:lon};
+  }
+  async function fetchData(path, p) {
+    const url = api + path + "?" + new URLSearchParams(p);
+    const response = await fetch(url, {headers:{Accept:"application/json"}});
+    const text = await response.text();
+    let data;
+    try { data=JSON.parse(text); } catch (_) { data={message:text.slice(0,500)}; }
+    if (!response.ok) throw Error("HTTP "+response.status+": "+(data.detail||data.message||"Request failed"));
+    return data;
+  }
+  function factor(name, status, score, confidence, evidence, reason, weight) {
+    return {name,status,score,confidence,evidence,reason,weight};
+  }
+  function assessFlood(d) {
+    if (!d) return factor("Historical flood evidence","Unavailable",null,"None",
+      "Flood endpoint did not return data","Retry the flood analysis; do not assume the site is flood-safe.",30);
+    const events = num(d,["event_count","historical_event_count","count"]);
+    const risk = (findText(d,["risk_status","risk_level","classification","interpretation"]) || flatten(d)).toLowerCase();
+    const confidence = findText(d,["confidence","data_confidence"]) || "Not stated";
+    if (/very high|extreme|severe/.test(risk))
+      return factor("Historical flood evidence","Elevated signal",20,confidence,
+        events===null ? risk : events+" mapped events; "+risk,
+        "Returned flood classification indicates a high concern. Obtain a site-specific flood study.",30);
+    if (/\bhigh\b/.test(risk))
+      return factor("Historical flood evidence","Elevated signal",35,confidence,
+        events===null ? risk : events+" mapped events; "+risk,
+        "Returned classification indicates concern; review drainage, flood maps and historical records.",30);
+    if (/\bmoderate\b|medium/.test(risk))
+      return factor("Historical flood evidence","Needs review",55,confidence,
+        events===null ? risk : events+" mapped events; "+risk,
+        "Investigate flood exposure and drainage before making a site decision.",30);
+    if (events !== null && events > 0)
+      return factor("Historical flood evidence","Events found",55,confidence,
+        events+" mapped historical events",
+        "Review event locations, dates, severity and distance from the actual plot boundary.",30);
+    if (events === 0)
+      return factor("Historical flood evidence","Insufficient to clear risk",null,confidence,
+        "No matching events returned by this query",
+        "A lack of mapped events does not prove low flood risk. Check coverage, catchments and official flood studies.",30);
+    return factor("Historical flood evidence","Uncertain",null,confidence,
+      risk.slice(0,220) || "No interpretable classification",
+      "Inspect the returned source and classification; do not convert missing evidence into a safe score.",30);
+  }
+  function assessTerrain(d) {
+    if (!d) return factor("Terrain","Unavailable",null,"None","No terrain response",
+      "Retry terrain analysis and verify the elevation data source.",20);
+    const slope = num(d,["estimated_slope_percent","slope_percent","slope_pct","slope.percentage","analysis.slope_percent"]);
+    const elev = num(d,["elevation_m","elevation","center_elevation_m","center_elevation","analysis.elevation_m"]);
+    const cls = findText(d,["terrain_class","slope_class","classification","analysis.terrain_class"]);
+    if (slope !== null) {
+      const score = slope <= 3 ? 90 : slope <= 8 ? 75 : slope <= 15 ? 55 : slope <= 30 ? 30 : 10;
+      return factor("Terrain","Slope indicator available",score,
+        findText(d,["confidence","data_confidence"]) || "Not stated",
+        "Estimated slope "+slope+"%"+(elev===null?"":"; elevation "+elev+" m")+(cls?"; "+cls:""),
+        "Slope bands are generic screening thresholds only. Confirm geotechnical stability, drainage and construction requirements.",20);
+    }
+    return factor("Terrain","Partial evidence",null,
+      findText(d,["confidence","data_confidence"]) || "Not stated",
+      [cls,elev===null?null:"elevation "+elev+" m"].filter(Boolean).join("; ") || "No numeric slope found",
+      "Elevation or terrain class alone cannot establish buildability. Obtain a surveyed slope and geotechnical review.",20);
+  }
+  function assessClimate(d) {
+    if (!d) return factor("Climate & rainfall","Unavailable",null,"None","No climate response",
+      "Retry climate analysis; check the observation period and source coverage.",20);
+    const heavy = num(d,["heavy_rain_days","heavy_rain_days_count","summary.heavy_rain_days","climate.heavy_rain_days"]);
+    const maxRain = num(d,["max_daily_precipitation_mm","max_daily_rain_mm","max_daily_precipitation","summary.max_daily_precipitation_mm","climate.max_daily_precipitation_mm"]);
+    const total = num(d,["precipitation_sum_mm","precipitation_sum","total_precipitation_mm","summary.precipitation_sum_mm","climate.precipitation_sum_mm"]);
+    const temp = num(d,["temperature_2m_mean_c","mean_temperature_c","temperature_mean","summary.temperature_2m_mean_c","climate.temperature_mean"]);
+    if (heavy === null && maxRain === null && total === null && temp === null)
+      return factor("Climate & rainfall","Partial evidence",null,
+        findText(d,["confidence","data_confidence"]) || "Not stated",
+        "Climate response received, but expected summary fields were not recognized",
+        "Inspect the raw climate payload and map the source-specific fields before scoring.",20);
+    let score=100, reasons=[];
+    if (heavy !== null) {
+      if (heavy >= 20) {score-=35;reasons.push(heavy+" heavy-rain days: elevated drainage review");}
+      else if (heavy >= 10) {score-=20;reasons.push(heavy+" heavy-rain days: drainage review");}
+      else reasons.push(heavy+" heavy-rain days in the reported period");
+    }
+    if (maxRain !== null) {
+      if (maxRain >= 100) {score-=25;reasons.push("maximum daily rainfall "+maxRain+" mm: high-intensity rainfall review");}
+      else if (maxRain >= 50) {score-=15;reasons.push("maximum daily rainfall "+maxRain+" mm: stormwater review");}
+      else reasons.push("maximum daily rainfall "+maxRain+" mm");
+    }
+    return factor("Climate & rainfall","Climate indicators available",Math.max(10,score),
+      findText(d,["confidence","data_confidence"]) || "Not stated",
+      [heavy===null?null:"heavy-rain days: "+heavy,maxRain===null?null:"maximum daily rainfall: "+maxRain+" mm",
+       total===null?null:"reported precipitation sum: "+total+" mm",temp===null?null:"mean temperature: "+temp+" °C"].filter(Boolean).join("; "),
+      (reasons.join(". ") || "Climate summary received")+
+      ". These generic rainfall screening rules are not a return-period flood or climate-change assessment.",20);
+  }
+  function assessSoil(d) {
+    if (!d) return factor("Soil","Unavailable",null,"None","No soil response",
+      "Retry the soil query and verify whether the data are modelled estimates or laboratory measurements.",15);
+    const ph = num(d,["ph","soil.ph","properties.ph","results.ph"]);
+    const clay = num(d,["clay_g_kg","clay","soil.clay_g_kg","properties.clay"]);
+    const sand = num(d,["sand_g_kg","sand","soil.sand_g_kg","properties.sand"]);
+    const cec = num(d,["cec_mmol_c_kg","cec","soil.cec_mmol_c_kg","properties.cec"]);
+    const organic = num(d,["organic_carbon_dg_kg","organic_carbon","soil.organic_carbon_dg_kg","properties.organic_carbon"]);
+    const conf = findText(d,["data_confidence","confidence"]) || "Not stated";
+    const evidence = [
+      ph===null?null:"pH "+ph, clay===null?null:"clay "+clay,
+      sand===null?null:"sand "+sand, cec===null?null:"CEC "+cec,
+      organic===null?null:"organic carbon "+organic
+    ].filter(Boolean).join("; ");
+    if (!evidence) return factor("Soil","Response needs field mapping",null,conf,
+      "Soil response received, but recognized property fields were not found",
+      "Review the raw response schema. Do not infer bearing capacity from soil texture or pH.",15);
+    return factor("Soil","Soil properties available",null,conf,evidence,
+      "Properties are not a construction suitability score. Obtain site-specific geotechnical testing, bearing capacity, groundwater and contamination assessments.",15);
+  }
+  function assessInfrastructure(d) {
+    if (!d) return factor("Infrastructure access","Unavailable",null,"None","No infrastructure response",
+      "Retry the infrastructure query and check the source's geographic coverage.",15);
+    const text=flatten(d).toLowerCase();
+    const explicitEmpty = /roads\s*[:=]\s*\[\s*\]|railways\s*[:=]\s*\[\s*\]|stations\s*[:=]\s*\[\s*\]/.test(text);
+    return factor("Infrastructure access",explicitEmpty?"Coverage not established":"Response available",null,
+      findText(d,["confidence","data_confidence"]) || "Not stated",
+      explicitEmpty?"No matching records in one or more returned categories":"Infrastructure response received; review returned category counts and distance fields",
+      "An empty map result is not proof that infrastructure is absent. Validate road access, utilities, capacity and distances using local authoritative data.",15);
+  }
+  function makeActions(factors) {
+    const a=[];
+    const flood=factors.find(x=>x.name.startsWith("Historical flood"));
+    const terrain=factors.find(x=>x.name==="Terrain");
+    const climate=factors.find(x=>x.name.startsWith("Climate"));
+    const soil=factors.find(x=>x.name==="Soil");
+    const infra=factors.find(x=>x.name.startsWith("Infrastructure"));
+    if (!flood || flood.score===null || flood.score<=55)
+      a.push(["High priority","Verify flood exposure","Check official flood hazard maps, watershed and drainage studies, and event locations relative to the full plot boundary."]);
+    if (!terrain || terrain.score===null || terrain.score<60)
+      a.push(["High priority","Obtain geotechnical / slope review","Confirm surveyed contours, slope stability, bearing capacity, groundwater and foundation requirements."]);
+    if (!climate || climate.score===null || climate.score<70)
+      a.push(["Priority","Review stormwater design","Use local intensity-duration-frequency data, catchment modelling and climate projections appropriate to the project."]);
+    if (!soil || soil.score===null)
+      a.push(["Required before approval","Validate soil suitability","Commission site-specific soil and geotechnical tests; do not treat modelled SoilGrids properties as lab results."]);
+    if (!infra || infra.score===null)
+      a.push(["Before investment","Verify infrastructure access","Confirm road connectivity, power, water, sewerage, telecoms and service capacity with authoritative providers."]);
+    if (!a.length)
+      a.push(["Next step","Complete project-specific due diligence","The available indicators are preliminary. Define the project type and criteria, then obtain independent technical and regulatory reviews."]);
+    a.push(["Decision governance","Set project-specific criteria","Define land-use, environmental, regulatory, engineering, budget and logistics constraints before issuing a final suitability decision."]);
+    return a;
+  }
+  function render(report) {
+    const known=report.factors.filter(f=>f.score!==null);
+    const score=known.length ? known.reduce((s,f)=>s+f.score*f.weight,0)/known.reduce((s,f)=>s+f.weight,0) : null;
+    const coverage=report.factors.reduce((s,f)=>s+(f.evidence && f.evidence!=="No response" ? 1:0),0);
+    const total=report.factors.length;
+    const overall = score===null ? "Not enough scored evidence" :
+      score>=80 ? "Favourable indicators; due diligence still required" :
+      score>=60 ? "Conditional; investigate key constraints" :
+      score>=40 ? "Significant constraints or uncertainty" :
+      "Major concerns indicated by available screening rules";
+    $("nd-overview").innerHTML=
+      '<div class="nd-card"><div class="nd-label">Preliminary indicator index</div><div class="nd-score">'+(score===null?"N/A":score.toFixed(0)+"/100")+'</div><div class="nd-track"><div class="nd-fill" style="width:'+(score===null?0:score)+'%"></div></div><div>'+esc(overall)+'</div><p class="nd-muted">Only scored factors contribute; unknown factors are excluded rather than treated as safe.</p></div>'+
+      '<div class="nd-card"><div class="nd-label">Evidence coverage</div><div class="nd-score">'+coverage+'/'+total+'</div><p class="nd-muted">Modules returned evidence or a usable response. This is not a measure of data accuracy.</p></div>'+
+      '<div class="nd-card"><div class="nd-label">Site coordinates</div><div style="font-size:18px;font-weight:650">'+esc(report.site.latitude.toFixed(6))+'<br>'+esc(report.site.longitude.toFixed(6))+'</div><p class="nd-muted">Assessment time: '+esc(report.created_at)+'</p></div>';
+    $("nd-factors").innerHTML=report.factors.map(f=>
+      '<div class="nd-card"><div class="nd-label">'+esc(f.name)+'</div><h3>'+esc(f.status)+'</h3>'+
+      (f.score===null?'<div class="nd-score" style="font-size:23px">Unscored</div>':
+       '<div class="nd-score" style="font-size:23px">'+f.score+'/100</div><div class="nd-track"><div class="nd-fill" style="width:'+f.score+'%"></div></div>')+
+      '<p><b>Evidence:</b> '+esc(f.evidence||"No evidence returned")+'</p><p><b>Confidence:</b> '+esc(f.confidence)+'</p><p class="nd-muted">'+esc(f.reason)+'</p></div>'
+    ).join("");
+    $("nd-actions-list").innerHTML=report.actions.map(a=>
+      '<div class="nd-card"><div class="nd-label">'+esc(a[0])+'</div><h3>'+esc(a[1])+'</h3><p class="nd-muted">'+esc(a[2])+'</p></div>'
+    ).join("");
+    $("nd-rationale").innerHTML=
+      '<p><b>Method:</b> transparent, generic screening rules applied to recognized API fields. Factor weights are relative screening weights, not calibrated engineering probabilities.</p>'+
+      '<p><b>Unknowns:</b> '+esc(report.factors.filter(f=>f.score===null).map(f=>f.name).join(", ")||"No factor was left unscored")+'. Unknown values are excluded from the index, so the index must not be interpreted without the coverage indicator.</p>'+
+      '<p><b>Critical limitation:</b> the current backend is primarily point-coordinate based. This assessment does not establish conditions across every point of the plot polygon, legal permission, construction safety, project economics or investment viability.</p>'+
+      '<p><b>Traceability:</b> '+esc(report.sources.join("; "))+'</p>';
+  }
+  async function run() {
+    $("nd-run").disabled=true;
+    $("nd-status").textContent="Fetching site intelligence and analysis evidence…";
+    try {
+      const site=coords(), p={latitude:site.latitude,longitude:site.longitude};
+      const specs=[
+        ["Site intelligence","/api/site/intelligence"],
+        ["Flood history","/api/analyze/flood"],
+        ["Climate","/analyze/climate"],
+        ["Terrain","/api/analyze/terrain"],
+        ["Soil","/api/soil/geographic"],
+        ["Infrastructure","/api/analyze/infrastructure"]
+      ];
+      const results=await Promise.all(specs.map(async ([name,path])=>{
+        try{return [name,{ok:true,data:await fetchData(path,p),path}];}
+        catch(e){return [name,{ok:false,error:e.message,path}];}
+      }));
+      const data=Object.fromEntries(results);
+      const get=n=>data[n]?.ok?data[n].data:null;
+      const factors=[
+        assessFlood(get("Flood history")),
+        assessTerrain(get("Terrain")),
+        assessClimate(get("Climate")),
+        assessSoil(get("Soil")),
+        assessInfrastructure(get("Infrastructure"))
+      ];
+      const failed=results.filter(([,r])=>!r.ok);
+      const actions=makeActions(factors);
+      const report={
+        product:"NEXORA",version:"Decision Intelligence V1",
+        created_at:new Date().toISOString(),site,
+        factors,actions,
+        sources:results.map(([name,r])=>name+": "+(r.ok?r.path+" (HTTP response received)":r.path+" unavailable: "+r.error)),
+        api_responses:data,
+        methodology:{
+          type:"Preliminary explainable screening heuristic",
+          score_scale:"0-100; not a probability or certified suitability rating",
+          unknown_policy:"Unscored factors excluded from weighted index",
+          weights:{historical_flood:30,terrain:20,climate:20,soil:15,infrastructure:15},
+          warning:"Generic rules require local calibration, source validation and project-specific criteria."
+        }
+      };
+      lastReport=report;
+      render(report);
+      try{localStorage.setItem("nexora_decision_report_v1",JSON.stringify(report));}catch(_){}
+      $("nd-status").textContent="Assessment complete. "+(results.length-failed.length)+"/"+results.length+
+        " data endpoints responded; "+factors.filter(f=>f.score!==null).length+"/"+factors.length+
+        " factors scored. "+(failed.length?"Unavailable: "+failed.map(x=>x[0]).join(", ")+".":"Review evidence and limitations before decisions.");
+    } catch(e) {
+      $("nd-status").textContent="Assessment could not run: "+e.message;
+    } finally { $("nd-run").disabled=false; }
+  }
+  $("nd-run").addEventListener("click",run);
+  $("nd-export").addEventListener("click",()=>{
+    if(!lastReport){$("nd-status").textContent="Run an assessment before exporting.";return;}
+    const blob=new Blob([JSON.stringify(lastReport,null,2)],{type:"application/json"});
+    const url=URL.createObjectURL(blob),a=document.createElement("a");
+    a.href=url;a.download="nexora-decision-assessment-"+new Date().toISOString().slice(0,10)+".json";
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+  $("nd-print").addEventListener("click",()=>window.print());
+  try {
+    const saved=JSON.parse(localStorage.getItem("nexora_decision_report_v1")||"null");
+    if(saved&&saved.factors){lastReport=saved;render(saved);$("nd-status").textContent="Previous browser-saved decision report loaded. Run again for fresh data.";}
+  } catch(_){}
+})();
+</script>
+
+
+<!-- NEXORA_COMPLETE_LIFECYCLE_V1 -->
+<style>
+#nx-lifecycle{margin:24px 0;padding:22px;border:1px solid #493347;border-radius:18px;background:#100e13;color:#f7f1f7;font:14px/1.5 system-ui,sans-serif}
+#nx-lifecycle *{box-sizing:border-box}
+#nx-lifecycle h2,#nx-lifecycle h3{margin:0 0 9px}
+#nx-lifecycle .nl-muted{color:#b6aab9}
+#nx-lifecycle .nl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
+#nx-lifecycle .nl-card{padding:14px;border:1px solid #443744;border-radius:12px;background:#19151d;min-width:0}
+#nx-lifecycle .nl-tag{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#f19bcf}
+#nx-lifecycle .nl-field{margin:10px 0}
+#nx-lifecycle label{display:block;font-size:12px;color:#c9c1ce;margin-bottom:5px}
+#nx-lifecycle input,#nx-lifecycle select,#nx-lifecycle textarea{width:100%;padding:10px;border:1px solid #49404e;border-radius:8px;background:#0c0b0f;color:white;font:inherit}
+#nx-lifecycle textarea{min-height:70px;resize:vertical}
+#nx-lifecycle button{padding:10px 13px;border-radius:9px;border:1px solid #ed4caa;background:#ed4caa;color:#160b13;font-weight:700;cursor:pointer}
+#nx-lifecycle button.nl-secondary{background:#201b24;color:#f5f1f7;border-color:#514456}
+#nx-lifecycle .nl-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+#nx-lifecycle .nl-stage{border-left:3px solid #ed65b5}
+#nx-lifecycle .nl-task{display:flex;align-items:flex-start;gap:9px;margin:10px 0;line-height:1.4}
+#nx-lifecycle .nl-task input{width:auto;margin-top:4px;accent-color:#ed65b5}
+#nx-lifecycle .nl-progress{height:7px;background:#382c3b;border-radius:9px;overflow:hidden;margin:8px 0}
+#nx-lifecycle .nl-progress span{display:block;height:100%;background:#ed65b5;width:0}
+#nx-lifecycle .nl-status{padding:10px;border-radius:8px;background:#211b25;margin-top:12px}
+#nx-lifecycle .nl-stage select{margin-top:5px}
+@media print{#nx-lifecycle button{display:none}#nx-lifecycle,#nx-lifecycle .nl-card{background:white;color:black;border:1px solid #aaa}#nx-lifecycle .nl-muted{color:#333}}
+</style>
+
+<section id="nx-lifecycle">
+  <div class="nl-tag">NEXORA · Project Lifecycle Management</div>
+  <h2>Complete Project Lifecycle</h2>
+  <p class="nl-muted">Manage the journey from project concept to closure. Checklist completion records your progress; it does not certify permits, engineering safety, financial viability or regulatory compliance.</p>
+
+  <div class="nl-grid">
+    <div class="nl-card">
+      <h3>Project profile</h3>
+      <div class="nl-field"><label for="nl-name">Project name</label><input id="nl-name" placeholder="e.g. Industrial development"></div>
+      <div class="nl-field"><label for="nl-type">Project type</label>
+        <select id="nl-type">
+          <option>Industrial</option><option>Residential</option><option>Commercial</option>
+          <option>Infrastructure</option><option>Agriculture</option><option>Energy</option>
+          <option>Logistics</option><option>Other</option>
+        </select>
+      </div>
+      <div class="nl-field"><label for="nl-budget">Estimated budget (INR)</label><input id="nl-budget" type="number" min="0" placeholder="Enter estimate"></div>
+      <div class="nl-field"><label for="nl-owner">Project owner / team</label><input id="nl-owner" placeholder="Owner or team"></div>
+      <div class="nl-field"><label for="nl-target">Target completion date</label><input id="nl-target" type="date"></div>
+      <div class="nl-field"><label for="nl-notes">Project assumptions and notes</label><textarea id="nl-notes" placeholder="Scope, requirements, constraints and open questions"></textarea></div>
+    </div>
+    <div class="nl-card">
+      <h3>Lifecycle overview</h3>
+      <div class="nl-tag">Checklist progress</div>
+      <div id="nl-total" style="font-size:34px;font-weight:750">0%</div>
+      <div class="nl-progress"><span id="nl-bar"></span></div>
+      <p id="nl-count" class="nl-muted">0 of 0 tasks completed</p>
+      <div class="nl-field"><label for="nl-current">Current project stage</label><select id="nl-current"></select></div>
+      <div class="nl-field"><label for="nl-health">Project status</label>
+        <select id="nl-health"><option>Planning</option><option>In progress</option><option>On hold</option><option>Completed</option><option>Cancelled</option></select>
+      </div>
+      <p id="nl-gate" class="nl-status">Complete the relevant evidence and approvals before progressing through decision gates.</p>
+      <p class="nl-muted">Progress is saved in this browser. It is not yet shared across users or persisted to PostgreSQL.</p>
+    </div>
+  </div>
+
+  <div class="nl-actions">
+    <button id="nl-save" type="button">Save project progress</button>
+    <button id="nl-export" type="button">Export lifecycle JSON</button>
+    <button id="nl-print" class="nl-secondary" type="button">Print / Save PDF</button>
+    <button id="nl-map" class="nl-secondary" type="button">Run map analysis</button>
+    <button id="nl-decision" class="nl-secondary" type="button">Run decision assessment</button>
+  </div>
+  <div id="nl-status" class="nl-status" role="status">Ready to set up your project.</div>
+  <div id="nl-stages" class="nl-grid"></div>
+  <div class="nl-card" style="margin-top:14px">
+    <h3>Connected NEXORA evidence</h3>
+    <p id="nl-evidence" class="nl-muted">Run map analysis and decision intelligence to make their latest browser-saved results available here.</p>
+  </div>
+</section>
+
+<script>
+(() => {
+  "use strict";
+  const root = document.getElementById("nx-lifecycle");
+  if (!root || root.dataset.ready === "1") return;
+  root.dataset.ready = "1";
+  const $ = id => document.getElementById(id);
+  const KEY = "nexora_lifecycle_project_v1";
+  const stages = [
+    {name:"1. Concept & requirements", tasks:[
+      "Define project objectives, intended use and success criteria",
+      "Identify stakeholders, users and project owner",
+      "Document capacity, scope, assumptions and constraints",
+      "Record initial budget and target schedule"
+    ]},
+    {name:"2. Site identification & screening", tasks:[
+      "Select candidate plot and record coordinates/boundary",
+      "Run climate, flood, soil, terrain and infrastructure analyses",
+      "Review source coverage, confidence and missing evidence",
+      "Compare candidate sites using consistent criteria"
+    ]},
+    {name:"3. Technical & environmental due diligence", tasks:[
+      "Arrange site survey and geotechnical investigation",
+      "Verify flood exposure, drainage and applicable hazards",
+      "Assess environmental sensitivities and resource requirements",
+      "Validate road, utilities, water and service capacity"
+    ]},
+    {name:"4. Feasibility & investment decision", tasks:[
+      "Estimate capital expenditure and operating expenditure",
+      "Assess market demand, supply chain and logistics",
+      "Develop project scenarios, sensitivities and contingencies",
+      "Record assumptions, risks and investment decision rationale"
+    ]},
+    {name:"5. Regulatory & land approvals", tasks:[
+      "Verify land title, zoning and permitted land use",
+      "Identify applicable planning, environmental and sector approvals",
+      "Confirm approval authorities, conditions and submission dates",
+      "Record actual permit evidence and responsible parties"
+    ]},
+    {name:"6. Design & implementation planning", tasks:[
+      "Prepare and review project design and specifications",
+      "Confirm schedule, procurement, contractors and responsibilities",
+      "Establish cost controls, safety plan and quality requirements",
+      "Approve execution baseline and risk mitigations"
+    ]},
+    {name:"7. Construction & implementation", tasks:[
+      "Track milestones, expenditure and schedule variance",
+      "Record inspections, quality evidence and site changes",
+      "Track incidents, issues, risks and corrective actions",
+      "Maintain change approvals and as-built records"
+    ]},
+    {name:"8. Operations & monitoring", tasks:[
+      "Define operational KPIs and monitoring responsibilities",
+      "Track environmental, safety, maintenance and compliance obligations",
+      "Review actual costs, performance and resource consumption",
+      "Schedule inspections, renewals and periodic risk reassessment"
+    ]},
+    {name:"9. Closure & handover", tasks:[
+      "Complete acceptance, handover and outstanding-defect records",
+      "Close contracts, financial commitments and applicable permits",
+      "Archive project, asset, compliance and operational documentation",
+      "Record lessons learned and outstanding post-closure obligations"
+    ]}
+  ];
+  const defaultState = () => ({
+    project:{name:"",type:"Industrial",budget:"",owner:"",target:"",notes:""},
+    current:stages[0].name, health:"Planning", checks:{}, updated:null
+  });
+  let state = defaultState();
+  const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+
+  function readForm() {
+    state.project = {
+      name:$("nl-name").value.trim(),
+      type:$("nl-type").value,
+      budget:$("nl-budget").value,
+      owner:$("nl-owner").value.trim(),
+      target:$("nl-target").value,
+      notes:$("nl-notes").value.trim()
+    };
+    state.current=$("nl-current").value;
+    state.health=$("nl-health").value;
+  }
+  function render() {
+    $("nl-stages").innerHTML = stages.map((stage,si)=>{
+      const done=stage.tasks.filter((_,ti)=>state.checks[si+"-"+ti]).length;
+      const pct=Math.round(done/stage.tasks.length*100);
+      return '<div class="nl-card nl-stage"><div class="nl-tag">Stage '+(si+1)+' of '+stages.length+'</div>'+
+        '<h3>'+escapeHtml(stage.name)+'</h3><div class="nl-progress"><span style="width:'+pct+'%"></span></div>'+
+        '<p class="nl-muted">'+done+'/'+stage.tasks.length+' tasks complete</p>'+
+        stage.tasks.map((task,ti)=>'<label class="nl-task"><input type="checkbox" data-task="'+si+'-'+ti+'" '+
+          (state.checks[si+"-"+ti]?'checked':'')+'><span>'+escapeHtml(task)+'</span></label>').join("")+
+        '</div>';
+    }).join("");
+    let total=0,done=0;
+    stages.forEach((s,si)=>s.tasks.forEach((_,ti)=>{total++;if(state.checks[si+"-"+ti])done++;}));
+    const pct=total?Math.round(done/total*100):0;
+    $("nl-total").textContent=pct+"%";
+    $("nl-bar").style.width=pct+"%";
+    $("nl-count").textContent=done+" of "+total+" tasks completed";
+    const currentIndex=stages.findIndex(s=>s.name===state.current);
+    $("nl-gate").textContent = currentIndex>=0 && currentIndex<5
+      ? "Before major commitments, verify evidence, feasibility and applicable approvals. Checklist completion alone is not an approval."
+      : "Maintain evidence, risk controls, accountable owners and formal sign-offs for the current stage.";
+    $("nl-evidence").textContent=evidenceSummary();
+  }
+  function evidenceSummary() {
+    let parts=[];
+    try {
+      const x=JSON.parse(localStorage.getItem("nexora_latest_analysis_v1")||"null");
+      if(x) parts.push("Map analysis snapshot: "+(x.run_at||"saved")+
+        "; modules returned: "+Object.keys(x.results||{}).length);
+    } catch(_){}
+    try {
+      const x=JSON.parse(localStorage.getItem("nexora_decision_report_v1")||"null");
+      if(x) parts.push("Decision assessment: "+(x.created_at||"saved")+
+        "; factors: "+(x.factors||[]).length);
+    } catch(_){}
+    if(!parts.length) return "No map or decision snapshots found in browser storage yet. Run those analyses from their dashboard panels, then return here.";
+    return parts.join(". ")+". These are browser-local snapshots, not verified permit, laboratory, finance or engineering records.";
+  }
+  function populate() {
+    $("nl-current").innerHTML=stages.map(s=>'<option>'+escapeHtml(s.name)+'</option>').join("");
+    $("nl-name").value=state.project.name;
+    $("nl-type").value=state.project.type;
+    $("nl-budget").value=state.project.budget;
+    $("nl-owner").value=state.project.owner;
+    $("nl-target").value=state.project.target;
+    $("nl-notes").value=state.project.notes;
+    $("nl-current").value=state.current;
+    $("nl-health").value=state.health;
+    render();
+  }
+  function save(showMessage=true) {
+    readForm();
+    state.updated=new Date().toISOString();
+    try {
+      localStorage.setItem(KEY,JSON.stringify(state));
+      if(showMessage) $("nl-status").textContent="Project progress saved in this browser at "+new Date(state.updated).toLocaleString()+".";
+    } catch(e) {
+      $("nl-status").textContent="Could not save browser progress: "+e.message;
+    }
+  }
+  function exportProject() {
+    readForm();
+    state.updated=new Date().toISOString();
+    let map=null,decision=null;
+    try{map=JSON.parse(localStorage.getItem("nexora_latest_analysis_v1")||"null");}catch(_){}
+    try{decision=JSON.parse(localStorage.getItem("nexora_decision_report_v1")||"null");}catch(_){}
+    const payload={
+      product:"NEXORA",
+      export_type:"Project lifecycle record",
+      exported_at:new Date().toISOString(),
+      project:state.project,
+      current_stage:state.current,
+      project_status:state.health,
+      updated_at:state.updated,
+      lifecycle_stages:stages.map((s,si)=>({
+        stage:s.name,
+        tasks:s.tasks.map((task,ti)=>({task,completed:!!state.checks[si+"-"+ti]}))
+      })),
+      latest_map_analysis:map,
+      latest_decision_assessment:decision,
+      limitations:"Checklist status is user-managed. Included analysis records are browser snapshots and do not establish legal approval, technical certification or validated project feasibility."
+    };
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+    const url=URL.createObjectURL(blob),a=document.createElement("a");
+    a.href=url;
+    a.download="nexora-project-lifecycle-"+new Date().toISOString().slice(0,10)+".json";
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    $("nl-status").textContent="Lifecycle JSON export prepared.";
+  }
+
+  $("nl-stages").addEventListener("change",event=>{
+    const el=event.target;
+    if(el && el.matches("input[data-task]")){
+      state.checks[el.dataset.task]=el.checked;
+      save(false);
+      render();
+    }
+  });
+  ["nl-name","nl-type","nl-budget","nl-owner","nl-target","nl-notes","nl-current","nl-health"].forEach(id=>{
+    $(id).addEventListener("change",()=>{save(false);render();});
+  });
+  $("nl-save").addEventListener("click",()=>save(true));
+  $("nl-export").addEventListener("click",exportProject);
+  $("nl-print").addEventListener("click",()=>window.print());
+  $("nl-map").addEventListener("click",()=>{
+    const btn=document.getElementById("nx-run");
+    if(btn){btn.click();$("nl-status").textContent="Map analysis requested. Review the Map & Site Intelligence panel for its result.";}
+    else $("nl-status").textContent="Map analysis panel was not found. Open the Map & Site Intelligence section.";
+  });
+  $("nl-decision").addEventListener("click",()=>{
+    const btn=document.getElementById("nd-run");
+    if(btn){btn.click();$("nl-status").textContent="Decision assessment requested. Review the Decision Intelligence panel for its result.";}
+    else $("nl-status").textContent="Decision Intelligence panel was not found.";
+  });
+
+  try {
+    const saved=JSON.parse(localStorage.getItem(KEY)||"null");
+    if(saved && saved.project && saved.checks) state=saved;
+  } catch(_){}
+  populate();
+  $("nl-status").textContent=state.updated
+    ? "Previous lifecycle progress loaded from this browser. Last saved: "+new Date(state.updated).toLocaleString()+"."
+    : "Create the project profile and track the nine lifecycle stages.";
+})();
+</script>
+
+</body></html>

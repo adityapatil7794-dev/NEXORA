@@ -113,6 +113,42 @@ class SoilAnalysisCreate(BaseModel):
     data_confidence: str = "MEDIUM"
     notes: Optional[str] = None
 # ============================================================
+
+
+# NEXORA Soil Intelligence: geographic SoilGrids estimates.
+@app.get("/api/soil/geographic")
+def get_geographic_soil(latitude: float, longitude: float):
+    validate_coordinates(latitude, longitude)
+    try:
+        # Import only when requested so API startup does not depend on GDAL.
+        from etl.soil_intelligence import get_soil_dataset
+
+        properties = get_soil_dataset(latitude, longitude)
+        available = sum(
+            1 for item in properties.values()
+            if isinstance(item, dict) and item.get("value") is not None
+        )
+
+        return {
+            "status": "success" if available else "partial",
+            "latitude": latitude,
+            "longitude": longitude,
+            "source": "ISRIC SoilGrids",
+            "depth": "0-5 cm",
+            "resolution_m": 250,
+            "available_properties": available,
+            "property_count": len(properties),
+            "interpretation": (
+                "Modelled geographic estimates, not laboratory measurements."
+            ),
+            "properties": properties,
+        }
+    except Exception as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Soil estimate extraction failed: {exc}"
+        )
+
 # API
 # ============================================================
 @app.get("/api")
@@ -282,6 +318,16 @@ def analyze_climate(
                 (precipitation >= 50).sum()
             ),
         },
+        "daily_series": [
+            {
+                "date": row["date"].strftime("%Y-%m-%d"),
+                "temperature_mean": round(float(row["temperature_mean"]), 2),
+                "temperature_max": round(float(row["temperature_max"]), 2),
+                "temperature_min": round(float(row["temperature_min"]), 2),
+                "precipitation_mm": round(float(row["precipitation"]), 2),
+            }
+            for _, row in dataframe.iterrows()
+        ],
         "source": "Open-Meteo Historical Weather API",
     }
 # ============================================================
@@ -1488,3 +1534,252 @@ def route_analysis(
             status_code=502,
             detail=f"Route analysis failed: {exc}",
         ) from exc
+
+
+# NEXORA_ANALYSIS_PERSISTENCE_V1
+@app.middleware("http")
+async def nexora_persist_analysis_runs(request, call_next):
+    """Persist successful analysis responses without changing their payload."""
+    from starlette.responses import Response
+    import json
+    import asyncio
+    import os
+
+    tracked = (
+        "/api/site/intelligence",
+        "/api/analyze/flood",
+        "/analyze/climate",
+        "/api/analyze/terrain",
+        "/api/analyze/infrastructure",
+        "/api/analyze/route",
+    )
+
+    response = await call_next(request)
+    if request.method != "GET" or request.url.path not in tracked:
+        return response
+
+    chunks = []
+    async for chunk in response.body_iterator:
+        if isinstance(chunk, str):
+            chunk = chunk.encode("utf-8")
+        chunks.append(chunk)
+    body = b"".join(chunks)
+
+    try:
+        payload = json.loads(body.decode("utf-8"))
+        if 200 <= response.status_code < 300:
+            import psycopg2
+            conn = psycopg2.connect(
+                dbname=os.getenv("PGDATABASE", "nexora_db"),
+                host=os.getenv("PGHOST") or None,
+                port=os.getenv("PGPORT") or None,
+                user=os.getenv("PGUSER") or None,
+                password=os.getenv("PGPASSWORD") or None,
+            )
+            try:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO public.analysis_runs
+                            (endpoint, request_params, response_payload, http_status)
+                        VALUES (%s, %s::jsonb, %s::jsonb, %s)
+                        """,
+                        (
+                            request.url.path,
+                            json.dumps(dict(request.query_params)),
+                            json.dumps(payload),
+                            response.status_code,
+                        ),
+                    )
+                conn.commit()
+            finally:
+                conn.close()
+    except Exception:
+        # Persistence failure must not turn a successful analysis into an API error.
+        import logging
+        logging.getLogger("nexora.persistence").exception(
+            "Could not persist analysis response for %s", request.url.path
+        )
+
+    return Response(
+        content=body,
+        status_code=response.status_code,
+        headers=dict(response.headers),
+        media_type=response.media_type,
+        background=response.background,
+    )
+
+
+# NEXORA_ANALYSIS_HISTORY_V2
+# Stores successful JSON analysis responses independently of domain tables.
+import json as _nexora_json
+import logging as _nexora_logging
+import os as _nexora_os
+import time as _nexora_time
+from datetime import datetime as _nexora_datetime
+from fastapi import Request as _NexoraRequest
+from fastapi.responses import Response as _NexoraResponse
+
+_NEXORA_TRACKED_PATHS = {
+    "/api/site/intelligence",
+    "/api/analyze/flood",
+    "/analyze/climate",
+    "/api/analyze/terrain",
+    "/api/analyze/infrastructure",
+    "/api/analyze/route",
+    "/api/soil/geographic",
+}
+
+def _nexora_db_connect():
+    import psycopg2
+    return psycopg2.connect(
+        dbname=_nexora_os.getenv("PGDATABASE", "nexora_db"),
+        **({
+            key: value for key, value in {
+                "host": _nexora_os.getenv("PGHOST"),
+                "port": _nexora_os.getenv("PGPORT"),
+                "user": _nexora_os.getenv("PGUSER"),
+                "password": _nexora_os.getenv("PGPASSWORD"),
+            }.items() if value
+        })
+    )
+
+def _nexora_ensure_history_table():
+    conn = _nexora_db_connect()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS public.analysis_run_records (
+                    id BIGSERIAL PRIMARY KEY,
+                    endpoint TEXT NOT NULL,
+                    http_method TEXT NOT NULL,
+                    status_code INTEGER NOT NULL,
+                    query_params JSONB NOT NULL DEFAULT '{}'::jsonb,
+                    response_json JSONB,
+                    response_excerpt TEXT,
+                    duration_ms DOUBLE PRECISION,
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                )
+            """)
+        conn.commit()
+    finally:
+        conn.close()
+
+try:
+    _nexora_ensure_history_table()
+except Exception:
+    _nexora_logging.getLogger("nexora.persistence").exception(
+        "Analysis history table initialization failed; API startup will continue"
+    )
+
+@app.middleware("http")
+async def nexora_analysis_history_middleware(request: _NexoraRequest, call_next):
+    if request.method != "GET" or request.url.path not in _NEXORA_TRACKED_PATHS:
+        return await call_next(request)
+
+    started = _nexora_time.perf_counter()
+    response = await call_next(request)
+
+    # Only capture JSON success responses; don't consume or rewrite other responses.
+    content_type = response.headers.get("content-type", "")
+    if response.status_code < 200 or response.status_code >= 300 or "json" not in content_type.lower():
+        return response
+
+    try:
+        chunks = []
+        async for chunk in response.body_iterator:
+            if isinstance(chunk, bytes):
+                chunks.append(chunk)
+            else:
+                chunks.append(str(chunk).encode("utf-8"))
+        body = b"".join(chunks)
+
+        parsed = None
+        try:
+            parsed = _nexora_json.loads(body.decode("utf-8"))
+        except Exception:
+            pass
+
+        # Rebuild the response so the frontend receives the original body.
+        headers = dict(response.headers)
+        headers.pop("content-length", None)
+        rebuilt = _NexoraResponse(
+            content=body,
+            status_code=response.status_code,
+            headers=headers,
+            media_type=content_type.split(";")[0],
+            background=response.background,
+        )
+
+        try:
+            conn = _nexora_db_connect()
+            try:
+                with conn.cursor() as cur:
+                    cur.execute("""
+                        INSERT INTO public.analysis_run_records
+                            (endpoint, http_method, status_code, query_params,
+                             response_json, response_excerpt, duration_ms)
+                        VALUES (%s, %s, %s, %s::jsonb, %s::jsonb, %s, %s)
+                    """, (
+                        request.url.path,
+                        request.method,
+                        response.status_code,
+                        _nexora_json.dumps(dict(request.query_params)),
+                        _nexora_json.dumps(parsed) if parsed is not None else None,
+                        body[:4000].decode("utf-8", errors="replace"),
+                        round((_nexora_time.perf_counter() - started) * 1000, 2),
+                    ))
+                conn.commit()
+            finally:
+                conn.close()
+        except Exception:
+            _nexora_logging.getLogger("nexora.persistence").exception(
+                "Could not save analysis history for %s", request.url.path
+            )
+
+        return rebuilt
+    except Exception:
+        _nexora_logging.getLogger("nexora.persistence").exception(
+            "Could not capture analysis response for %s", request.url.path
+        )
+        # The middleware must not turn an analysis response into a server error.
+        return response
+
+@app.get("/api/analysis/history")
+def nexora_analysis_history(limit: int = 20, endpoint: str = None):
+    """Return recent saved analysis runs; newest first."""
+    limit = max(1, min(limit, 100))
+    conn = _nexora_db_connect()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT id, endpoint, http_method, status_code, query_params,
+                       response_json, response_excerpt, duration_ms, created_at
+                FROM public.analysis_run_records
+                WHERE (%s IS NULL OR endpoint = %s)
+                ORDER BY created_at DESC
+                LIMIT %s
+            """, (endpoint, endpoint, limit))
+            rows = cur.fetchall()
+        return {
+            "status": "success",
+            "count": len(rows),
+            "runs": [
+                {
+                    "id": row[0],
+                    "endpoint": row[1],
+                    "method": row[2],
+                    "status_code": row[3],
+                    "query_params": row[4],
+                    "response": row[5],
+                    "response_excerpt": row[6],
+                    "duration_ms": row[7],
+                    "created_at": row[8].isoformat() if row[8] else None,
+                }
+                for row in rows
+            ],
+            "note": "Saved API responses are evidence snapshots, not independent engineering validation."
+        }
+    finally:
+        conn.close()
+

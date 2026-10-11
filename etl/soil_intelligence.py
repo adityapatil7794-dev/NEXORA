@@ -54,7 +54,7 @@ SOIL_PROPERTIES = {
         "folder": "bdod",
         "file": "bdod_0-5cm_Q0.5.vrt",
         "scale": 100,
-        "unit": "cg/cm3"
+        "unit": "g/cm³"
     },
     "cec": {
         "folder": "cec",
