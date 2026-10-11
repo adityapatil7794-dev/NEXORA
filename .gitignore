@@ -34,3 +34,11 @@ data/soil_cache/
 .env.*
 !.env.example
 .envvxc
+
+# Large generated datasets
+data/*.csv
+data/*.json
+
+# Python virtual environments
+venv/
+.venv/
