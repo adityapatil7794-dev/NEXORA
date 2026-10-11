@@ -42,3 +42,4 @@ data/*.json
 # Python virtual environments
 venv/
 .venv/
+.envvxc
