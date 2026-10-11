@@ -43,3 +43,4 @@ data/*.json
 venv/
 .venv/
 .envvxc
+.envvxc
