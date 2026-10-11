@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXORA | Imagine It. See It. Make It Real.</title>
+
+  <style>
+
+    .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.result-card {
+    background: #ffffff;
+    color: #171717;
+    padding: 22px;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.result-card h3 {
+    font-size: 14px;
+    margin: 0 0 14px;
+    color: #666666;
+}
+
+.result-value {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    overflow-wrap: anywhere;
+}
+
+.result-card small {
+    color: #777777;
+    line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #111;
+      background: #fff;
+    }
+
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.25),
+          rgba(255, 255, 255, 0.02)
+        ),
+        url("house.png") center center / cover no-repeat;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 6%;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #111;
+    }
+
+    .logo span {
+      color: #ed789e;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      font-size: 12px;
+    }
+
+    .nav-right a {
+      color: #222;
+      text-decoration: none;
+    }
+
+    .nav-right a:hover {
+      color: #e982a5;
+    }
+
+    .tagline {
+      color: #555;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 7%;
+      padding: 45px 6% 0;
+      align-items: start;
+    }
+
+    .left-content {
+      position: relative;
+    }
+
+    h1 {
+      font-size: clamp(42px, 5.2vw, 68px);
+      line-height: 1.06;
+      letter-spacing: -3px;
+      font-weight: 500;
+    }
+
+    h1 span {
+      display: block;
+      color: #e982a5;
+    }
+
+    /* Single Explore NEXORA button */
+    .explore {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-top: 32px;
+      padding: 14px 15px 14px 23px;
+      min-width: 205px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 13px;
+      background: linear-gradient(
+        145deg,
+        #303030 0%,
+        #151515 55%,
+        #080808 100%
+      );
+      color: #fff;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.25px;
+      box-shadow:
+        0 7px 0 #050505,
+        0 10px 16px rgba(0, 0, 0, 0.23),
+        inset 0 1px 1px rgba(255, 255, 255, 0.24);
+      transform: translateY(0);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      cursor: pointer;
+    }
+
+    .explore:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 10px 0 #050505,
+        0 15px 22px rgba(0, 0, 0, 0.25),
+        inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .explore:active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 #050505;
+    }
+
+    .explore-text {
+      white-space: nowrap;
+    }
+
+    .arrow-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: linear-gradient(
+        145deg,
+        #f6a6bf,
+        #e982a5 65%,
+        #d9678e
+      );
+      color: #171717;
+      box-shadow:
+        0 3px 0 #b95678,
+        inset 0 1px 2px rgba(255, 255, 255, 0.65);
+      transition: transform 0.2s ease;
+    }
+
+    .arrow {
+      font-size: 19px;
+      line-height: 1;
+      transition: transform 0.2s ease;
+    }
+
+    .explore:hover .arrow {
+      transform: translateX(3px);
+    }
+
+    .explore:focus-visible {
+      outline: 3px solid #e982a5;
+      outline-offset: 5px;
+    }
+
+    .founder {
+      position: absolute;
+      top: 76px;
+      left: 390px;
+      min-width: 190px;
+      padding-left: 16px;
+      border-left: 2px solid #e982a5;
+    }
+
+    .founder-label {
+      display: block;
+      margin-bottom: 6px;
+      color: #777;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .founder-name {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .founder-role {
+      display: block;
+      margin-top: 7px;
+      color: #777;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .right-content {
+      max-width: 370px;
+      padding-top: 10px;
+    }
+
+    .thought {
+      color: #555;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    #site-results {
+      display: none;
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 24px;
+      color: #fff;
+      background: #171717;
+      border-radius: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    #site-status {
+      margin: 15px 0;
+      color: #e982a5;
+    }
+
+    #site-data {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-size: 13px;
+    }
+
+    @media (max-width: 1000px) {
+      .content {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .founder {
+        position: static;
+        margin-top: 20px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .hero {
+        background-position: 58% center;
+      }
+
+      .navbar {
+        padding: 22px;
+      }
+
+      .nav-right {
+        gap: 12px;
+      }
+
+      .nav-right a {
+        display: none;
+      }
+
+      .content {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 45px 22px 35px;
+      }
+
+      h1 {
+        font-size: clamp(40px, 10vw, 58px);
+        letter-spacing: -2px;
+      }
+
+      .right-content {
+        max-width: 320px;
+      }
+
+      .thought {
+        font-size: 13px;
+      }
+
+      .founder {
+        position: static;
+        margin-top: 24px;
+      }
+
+      .explore {
+        min-width: 195px;
+      }
+
+      #site-results {
+        margin: 24px 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="hero">
+    <header class="navbar">
+      <div class="logo">NE<span>X</span>ORA</div>
+
+      <nav class="nav-right">
+        <a href="#vision">Vision</a>
+        <a href="#site-results">Intelligence</a>
+        <a href="#site-results">Platform</a>
+        <div class="tagline">Site &amp; Project Intelligence</div>
+      </nav>
+    </header>
+
+    <section class="content" id="vision">
+      <div class="left-content">
+        <h1>
+          Imagine It. See It.
+          <span>Make It Real.</span>
+        </h1>
+
+        <div class="founder">
+          <span class="founder-label">A Vision By</span>
+          <div class="founder-name">Aditya Patil</div>
+          <span class="founder-role">Founder · Nexora</span>
+        </div>
+
+        <!-- Only one Explore button -->
+        <a
+          class="explore"
+          href="#site-results"
+          id="explore-button"
+          aria-controls="site-results"
+        >
+          <span class="explore-text">Explore NEXORA</span>
+          <span class="arrow-box" aria-hidden="true">
+            <span class="arrow">→</span>
+          </span>
+        </a>
+      </div>
+
+      <div class="right-content">
+        <p class="thought">
+          Every great project begins with a vision.
+          Understand the land, the risks, and the possibilities
+          before you build — with a clearer view of what comes next.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <section id="site-results">
+    <h2>NEXORA Site Intelligence</h2>
+    <p id="site-status">Waiting for analysis...</p>
+    <div id="site-data" class="results-grid"></div>
+  </section>
+
+  <script>
+    const NEXORA_API = "http://127.0.0.1:8000";
+
+    async function getSiteIntelligence(
+      latitude,
+      longitude,
+      plotId = null
+    ) {
+      const params = new URLSearchParams({
+        latitude: latitude,
+        longitude: longitude,
+        radius_km: 10
+      });
+
+      if (plotId !== null) {
+        params.set("plot_id", plotId);
+      }
+
+      const response = await fetch(
+        `${NEXORA_API}/api/site/intelligence?${params}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      return await response.json();
+    }
+
+    document
+      .getElementById("explore-button")
+      .addEventListener("click", async function (event) {
+        event.preventDefault();
+
+        const results = document.getElementById("site-results");
+        const status = document.getElementById("site-status");
+        const output = document.getElementById("site-data");
+
+        results.style.display = "block";
+        results.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+        status.textContent =
+          "Analyzing site near Pune using sample coordinates...";
+        output.textContent = "";
+
+        try {
+          const result = await getSiteIntelligence(
+            18.5204,
+            73.8567
+          );
+
+          status.textContent =
+            "Site intelligence loaded successfully. Sample location: Pune.";
+
+          output.innerHTML = "";
+
+const climate = result.climate?.climate || result.climate || {};
+const flood = result.historical_flood || {};
+const location = result.location || {};
+
+const cards = [
+    {
+        title: "Location",
+        value: `${location.latitude ?? "N/A"}, ${location.longitude ?? "N/A"}`,
+        detail: "Coordinates analyzed"
+    },
+    {
+        title: "Average Temperature",
+        value: climate.temperature_mean != null
+            ? `${climate.temperature_mean} °C`
+            : "N/A",
+        detail: "Historical weather data"
+    },
+    {
+        title: "Total Precipitation",
+        value: climate.precipitation_sum != null
+            ? `${climate.precipitation_sum} mm`
+            : "N/A",
+        detail: "Across the returned period"
+    },
+    {
+        title: "Historical Flood Evidence",
+        value: flood.risk_status ?? "Not available",
+        detail: `${flood.event_count ?? 0} mapped events in this response`
+    }
+];
+
+cards.forEach(card => {
+    const element = document.createElement("article");
+    element.className = "result-card";
+
+    const title = document.createElement("h3");
+    title.textContent = card.title;
+
+    const value = document.createElement("p");
+    value.className = "result-value";
+    value.textContent = card.value;
+
+    const detail = document.createElement("small");
+    detail.textContent = card.detail;
+
+    element.append(title, value, detail);
+    output.appendChild(element);
+});
+        } catch (error) {
+          status.textContent =
+            "Could not load site intelligence. Check whether the NEXORA API is running on port 8000.";
+
+          output.textContent = error.message;
+          console.error("NEXORA connection failed:", error);
+        }
+      });
+  </script>
+</body>

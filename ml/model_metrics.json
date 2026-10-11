@@ -1,0 +1,111 @@
+{
+  "project": "NEXORA",
+  "model": "Calibrated Random Forest",
+  "version": "NEXORA-FLOOD-ML-1.0",
+  "dataset": "/Users/adityaanilpatil/Documents/Nexora/data/flood_training_dataset_v2.csv",
+  "dataset_samples": 1825,
+  "training_samples": 1460,
+  "testing_samples": 365,
+  "features": [
+    "temperature_mean",
+    "temperature_max",
+    "temperature_min",
+    "precipitation_sum",
+    "precipitation_mean",
+    "precipitation_max",
+    "precipitation_p95",
+    "heavy_rain_days",
+    "extreme_rain_days"
+  ],
+  "feature_importance": [
+    {
+      "feature": "precipitation_p95",
+      "importance": 0.193162
+    },
+    {
+      "feature": "precipitation_mean",
+      "importance": 0.181159
+    },
+    {
+      "feature": "precipitation_max",
+      "importance": 0.125092
+    },
+    {
+      "feature": "precipitation_sum",
+      "importance": 0.122961
+    },
+    {
+      "feature": "temperature_min",
+      "importance": 0.112763
+    },
+    {
+      "feature": "temperature_max",
+      "importance": 0.10052
+    },
+    {
+      "feature": "temperature_mean",
+      "importance": 0.096278
+    },
+    {
+      "feature": "heavy_rain_days",
+      "importance": 0.055706
+    },
+    {
+      "feature": "extreme_rain_days",
+      "importance": 0.012358
+    }
+  ],
+  "metrics": {
+    "accuracy": 0.780822,
+    "precision": 0.764103,
+    "recall": 0.814208,
+    "f1_score": 0.78836,
+    "roc_auc": 0.843061,
+    "brier_score": 0.158218,
+    "confusion_matrix": [
+      [
+        136,
+        46
+      ],
+      [
+        34,
+        149
+      ]
+    ],
+    "classification_report": {
+      "Non-Flood": {
+        "precision": 0.8,
+        "recall": 0.7472527472527473,
+        "f1-score": 0.7727272727272727,
+        "support": 182.0
+      },
+      "Flood": {
+        "precision": 0.764102564102564,
+        "recall": 0.8142076502732241,
+        "f1-score": 0.7883597883597884,
+        "support": 183.0
+      },
+      "accuracy": 0.7808219178082192,
+      "macro avg": {
+        "precision": 0.782051282051282,
+        "recall": 0.7807301987629857,
+        "f1-score": 0.7805435305435305,
+        "support": 365.0
+      },
+      "weighted avg": {
+        "precision": 0.7820021074815595,
+        "recall": 0.7808219178082192,
+        "f1-score": 0.7805649449485066,
+        "support": 365.0
+      }
+    },
+    "test_samples": 365
+  },
+  "notes": [
+    "Latitude and longitude were excluded from predictive features.",
+    "Flood event outcome fields were excluded to prevent target leakage.",
+    "Probability calibration uses 5-fold cross-validation.",
+    "Training labels include spatial proxy non-flood samples.",
+    "A non-flood label does not prove that a location is permanently flood-safe."
+  ]
+}

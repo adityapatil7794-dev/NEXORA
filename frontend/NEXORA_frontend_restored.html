@@ -1,0 +1,10191 @@
+<!DOCTYPE html>
+
+
+
+<html lang="en">
+
+
+
+<head>
+
+
+
+<meta charset="UTF-8">
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+
+
+
+
+<title>NEXORA — Project & Site Intelligence</title>
+
+
+
+
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
+
+
+
+
+
+
+
+<style>
+
+
+
+:root{
+
+
+
+  --bg:#07101c;
+
+
+
+  --panel:#0b1727;
+
+
+
+  --panel2:#0e1d30;
+
+
+
+  --line:rgba(150,185,220,.13);
+
+
+
+  --line2:rgba(150,185,220,.22);
+
+
+
+  --text:#eef5ff;
+
+
+
+  --muted:#8fa4bc;
+
+
+
+  --blue:#5aa9ff;
+
+
+
+  --cyan:#55e6d0;
+
+
+
+  --violet:#8b7cff;
+
+
+
+  --green:#5ee3a3;
+
+
+
+  --amber:#ffca69;
+
+
+
+  --red:#ff727d;
+
+
+
+  --shadow:0 25px 80px rgba(0,0,0,.32);
+
+
+
+}
+
+
+
+
+
+
+
+*{
+
+
+
+  box-sizing:border-box;
+
+
+
+}
+
+
+
+
+
+
+
+html,body{
+
+
+
+  margin:0;
+
+
+
+  min-height:100%;
+
+
+
+  background:var(--bg);
+
+
+
+  color:var(--text);
+
+
+
+  font-family:"DM Sans",sans-serif;
+
+
+
+}
+
+
+
+
+
+
+
+body{
+
+
+
+  background:
+
+
+
+    radial-gradient(
+
+
+
+      circle at 78% -10%,
+
+
+
+      rgba(75,128,255,.18),
+
+
+
+      transparent 31rem
+
+
+
+    ),
+
+
+
+    radial-gradient(
+
+
+
+      circle at 12% 20%,
+
+
+
+      rgba(75,230,208,.07),
+
+
+
+      transparent 25rem
+
+
+
+    ),
+
+
+
+    linear-gradient(
+
+
+
+      135deg,
+
+
+
+      #07101c 0%,
+
+
+
+      #091524 48%,
+
+
+
+      #06101c 100%
+
+
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+button,
+
+
+
+select{
+
+
+
+  font:inherit;
+
+
+
+}
+
+
+
+
+
+
+
+button{
+
+
+
+  cursor:pointer;
+
+
+
+}
+
+
+
+
+
+
+
+.app{
+
+
+
+  display:grid;
+
+
+
+  grid-template-columns:86px 1fr;
+
+
+
+  min-height:100vh;
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+
+
+
+   LEFT NAVIGATION
+
+
+
+\========================= */
+
+
+
+
+
+
+
+.rail{
+
+
+
+  border-right:1px solid var(--line);
+
+
+
+  background:rgba(5,13,24,.86);
+
+
+
+  backdrop-filter:blur(24px);
+
+
+
+
+
+
+
+  display:flex;
+
+
+
+  flex-direction:column;
+
+
+
+  align-items:center;
+
+
+
+
+
+
+
+  padding:24px 14px;
+
+
+
+
+
+
+
+  position:sticky;
+
+
+
+  top:0;
+
+
+
+  height:100vh;
+
+
+
+
+
+
+
+  z-index:20;
+
+
+
+}
+
+
+
+
+
+
+
+.logo{
+
+
+
+  width:46px;
+
+
+
+  height:46px;
+
+
+
+
+
+
+
+  border-radius:15px;
+
+
+
+
+
+
+
+  display:grid;
+
+
+
+  place-items:center;
+
+
+
+
+
+
+
+  font:800 20px Manrope;
+
+
+
+
+
+
+
+  background:
+
+
+
+    linear-gradient(
+
+
+
+      145deg,
+
+
+
+      #69b8ff,
+
+
+
+      #7d70ff
+
+
+
+    );
+
+
+
+
+
+
+
+  box-shadow:
+
+
+
+    0 10px 30px rgba(86,130,255,.28);
+
+
+
+
+
+
+
+  margin-bottom:42px;
+
+
+
+}
+
+
+
+
+
+
+
+.nav{
+
+
+
+  display:flex;
+
+
+
+  flex-direction:column;
+
+
+
+  gap:12px;
+
+
+
+}
+
+
+
+
+
+
+
+.nav button{
+
+
+
+  width:46px;
+
+
+
+  height:46px;
+
+
+
+
+
+
+
+  border:1px solid transparent;
+
+
+
+  border-radius:14px;
+
+
+
+
+
+
+
+  background:transparent;
+
+
+
+
+
+
+
+  color:#71869f;
+
+
+
+
+
+
+
+  font-size:18px;
+
+
+
+}
+
+
+
+
+
+
+
+.nav button.active,
+
+
+
+.nav button:hover{
+
+
+
+  background:#102238;
+
+
+
+  color:#dcecff;
+
+
+
+  border-color:var(--line2);
+
+
+
+}
+
+
+
+
+
+
+
+.rail-bottom{
+
+
+
+  margin-top:auto;
+
+
+
+
+
+
+
+  color:#5f7892;
+
+
+
+
+
+
+
+  font-size:12px;
+
+
+
+
+
+
+
+  writing-mode:vertical-rl;
+
+
+
+
+
+
+
+  letter-spacing:2px;
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+
+
+
+   MAIN
+
+
+
+\========================= */
+
+
+
+
+
+
+
+main{
+
+
+
+  padding:30px 38px 42px;
+
+
+
+
+
+
+
+  max-width:1800px;
+
+
+
+
+
+
+
+  width:100%;
+
+
+
+
+
+
+
+  margin:auto;
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+
+
+
+   TOP BAR
+
+
+
+\========================= */
+
+
+
+
+
+
+
+.topbar{
+
+
+
+  display:flex;
+
+
+
+  align-items:center;
+
+
+
+  justify-content:space-between;
+
+
+
+
+
+
+
+  margin-bottom:26px;
+
+
+
+}
+
+
+
+
+
+
+
+.eyebrow{
+
+
+
+  font-size:11px;
+
+
+
+  font-weight:800;
+
+
+
+
+
+
+
+  letter-spacing:2.5px;
+
+
+
+
+
+
+
+  color:#66baff;
+
+
+
+}
+
+
+
+
+
+
+
+.brand{
+
+
+
+  font:800 29px Manrope;
+
+
+
+
+
+
+
+  letter-spacing:-1.3px;
+
+
+
+
+
+
+
+  margin-top:5px;
+
+
+
+}
+
+
+
+
+
+
+
+.brand span{
+
+
+
+  color:#6ea9ff;
+
+
+
+}
+
+
+
+
+
+
+
+.sub{
+
+
+
+  color:var(--muted);
+
+
+
+
+
+
+
+  font-size:13px;
+
+
+
+
+
+
+
+  margin-top:5px;
+
+
+
+}
+
+
+
+
+
+
+
+.top-actions{
+
+
+
+  display:flex;
+
+
+
+  align-items:center;
+
+
+
+
+
+
+
+  gap:10px;
+
+
+
+}
+
+
+
+
+
+
+
+.status{
+
+
+
+  display:flex;
+
+
+
+  align-items:center;
+
+
+
+
+
+
+
+  gap:8px;
+
+
+
+
+
+
+
+  padding:9px 13px;
+
+
+
+
+
+
+
+  border:1px solid var(--line);
+
+
+
+
+
+
+
+  background:rgba(12,28,46,.65);
+
+
+
+
+
+
+
+  border-radius:999px;
+
+
+
+
+
+
+
+  color:#9fb4c9;
+
+
+
+
+
+
+
+  font-size:12px;
+
+
+
+}
+
+
+
+
+
+
+
+.dot{
+
+
+
+  width:7px;
+
+
+
+  height:7px;
+
+
+
+
+
+
+
+  border-radius:50%;
+
+
+
+
+
+
+
+  background:var(--green);
+
+
+
+
+
+
+
+  box-shadow:
+
+
+
+    0 0 14px var(--green);
+
+
+
+}
+
+
+
+
+
+
+
+.founder{
+
+
+
+  font-size:12px;
+
+
+
+
+
+
+
+  color:#778da5;
+
+
+
+
+
+
+
+  border-left:1px solid var(--line);
+
+
+
+
+
+
+
+  padding-left:15px;
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+
+
+
+   HERO
+
+
+
+\========================= */
+
+
+
+
+
+
+
+.hero{
+
+
+
+  display:grid;
+
+
+
+
+
+
+
+  grid-template-columns:
+
+
+
+    1.25fr
+
+
+
+    .75fr;
+
+
+
+
+
+
+
+  gap:18px;
+
+
+
+
+
+
+
+  margin-bottom:18px;
+
+
+
+}
+
+
+
+
+
+
+
+.hero-card,
+
+
+
+.control-card,
+
+
+
+.map-card,
+
+
+
+.insight-card,
+
+
+
+.evidence-card{
+
+
+
+
+
+
+
+  border:1px solid var(--line);
+
+
+
+
+
+
+
+  background:
+
+
+
+    linear-gradient(
+
+
+
+      145deg,
+
+
+
+      rgba(14,29,48,.94),
+
+
+
+      rgba(8,19,33,.94)
+
+
+
+    );
+
+
+
+
+
+
+
+  box-shadow:var(--shadow);
+
+
+
+
+
+
+
+  border-radius:24px;
+
+
+
+}
+
+
+
+
+
+
+
+.hero-card{
+
+
+
+  padding:30px 32px;
+
+
+
+
+
+
+
+  position:relative;
+
+
+
+
+
+
+
+  overflow:hidden;
+
+
+
+
+
+
+
+  min-height:190px;
+
+
+
+}
+
+
+
+
+
+
+
+.hero-card:after{
+
+
+
+  content:"";
+
+
+
+
+
+
+
+  position:absolute;
+
+
+
+
+
+
+
+  width:330px;
+
+
+
+  height:330px;
+
+
+
+
+
+
+
+  border-radius:50%;
+
+
+
+
+
+
+
+  right:-100px;
+
+
+
+  top:-160px;
+
+
+
+
+
+
+
+  background:
+
+
+
+    radial-gradient(
+
+
+
+      circle,
+
+
+
+      rgba(85,230,208,.12),
+
+
+
+      transparent 65%
+
+
+
+    );
+
+
+
+}
+
+
+
+
+
+
+
+.hero-title{
+
+
+
+  font:
+
+
+
+    800 clamp(30px,3vw,47px)
+
+
+
+    Manrope;
+
+
+
+
+
+
+
+  letter-spacing:-2.2px;
+
+
+
+
+
+
+
+  max-width:760px;
+
+
+
+
+
+
+
+  line-height:1.02;
+
+
+
+}
+
+
+
+
+
+
+
+.hero-title em{
+
+
+
+  font-style:normal;
+
+
+
+
+
+
+
+  background:
+
+
+
+    linear-gradient(
+
+
+
+      90deg,
+
+
+
+      #f4f8ff,
+
+
+
+      #72b8ff 50%,
+
+
+
+      #65e0d0
+
+
+
+    );
+
+
+
+
+
+
+
+  -webkit-background-clip:text;
+
+
+
+background-clip:text;
+
+
+
+
+
+
+
+color:transparent;
+
+
+
+}
+
+
+
+
+
+
+
+.hero-copy{
+
+
+
+  color:#8ea5bd;
+
+
+
+
+
+
+
+  max-width:700px;
+
+
+
+
+
+
+
+  line-height:1.65;
+
+
+
+
+
+
+
+  font-size:14px;
+
+
+
+
+
+
+
+  margin:13px 0 20px;
+
+
+
+}
+
+
+
+
+
+
+
+.hero-meta{
+
+
+
+  display:flex;
+
+
+
+
+
+
+
+  gap:10px;
+
+
+
+
+
+
+
+  flex-wrap:wrap;
+
+
+
+}
+
+
+
+
+
+
+
+.pill{
+
+
+
+  padding:7px 10px;
+
+
+
+
+
+
+
+  border:1px solid var(--line);
+
+
+
+
+
+
+
+  border-radius:999px;
+
+
+
+
+
+
+
+  color:#9fb4c9;
+
+
+
+
+
+
+
+  font-size:11px;
+
+
+
+
+
+
+
+  background:#0a1829;
+
+
+
+}
+
+
+
+
+
+
+
+.pill strong{
+
+
+
+  color:#eaf4ff;
+
+
+
+}
+
+
+
+
+
+
+
+.decision-card{
+
+
+
+  padding:25px;
+
+
+
+
+
+
+
+  display:flex;
+
+
+
+
+
+
+
+  flex-direction:column;
+
+
+
+
+
+
+
+  justify-content:space-between;
+
+
+
+}
+
+
+
+
+
+
+
+.mini-label{
+
+
+
+  font-size:10px;
+
+
+
+
+
+
+
+  letter-spacing:1.8px;
+
+
+
+
+
+
+
+  text-transform:uppercase;
+
+
+
+
+
+
+
+  color:#7088a2;
+
+
+
+
+
+
+
+  font-weight:800;
+
+
+
+}
+
+
+
+
+
+
+
+.decision-main{
+
+
+
+  margin-top:10px;
+
+
+
+
+
+
+
+  font:
+
+
+
+    800 31px
+
+
+
+    Manrope;
+
+
+
+
+
+
+
+  letter-spacing:-1px;
+
+
+
+}
+
+
+
+
+
+
+
+.decision-main span{
+
+
+
+  display:block;
+
+
+
+
+
+
+
+  font:
+
+
+
+    500 12px
+
+
+
+    "DM Sans";
+
+
+
+
+
+
+
+  color:#8298af;
+
+
+
+
+
+
+
+  margin-top:5px;
+
+
+
+
+
+
+
+  letter-spacing:0;
+
+
+
+}
+
+
+
+
+
+
+
+.score-row{
+
+
+
+  display:flex;
+
+
+
+
+
+
+
+  align-items:end;
+
+
+
+
+
+
+
+  justify-content:space-between;
+
+
+
+
+
+
+
+  margin-top:18px;
+
+
+
+}
+
+
+
+
+
+
+
+.score{
+
+
+
+  font:
+
+
+
+    800 47px
+
+
+
+    Manrope;
+
+
+
+
+
+
+
+  letter-spacing:-3px;
+
+
+
+}
+
+
+
+
+
+
+
+.score small{
+
+
+
+  font:
+
+
+
+    600 14px
+
+
+
+    "DM Sans";
+
+
+
+
+
+
+
+  color:#7e94aa;
+
+
+
+
+
+
+
+  letter-spacing:0;
+
+
+
+}
+
+
+
+
+
+
+
+.conf{
+
+
+
+  font-size:11px;
+
+
+
+
+
+
+
+  color:#91a8be;
+
+
+
+
+
+
+
+  text-align:right;
+
+
+
+}
+
+
+
+
+
+
+
+.conf b{
+
+
+
+  color:#d9e8f6;
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+
+
+
+   CONTROL PANEL
+
+
+
+\========================= */
+
+
+
+
+
+
+
+.control-card{
+
+
+
+  padding:16px;
+
+
+
+
+
+
+
+  margin-bottom:18px;
+
+
+
+}
+
+
+
+
+
+
+
+.controls{
+
+
+
+  display:grid;
+
+
+
+
+
+
+
+  grid-template-columns:
+
+
+
+    1.15fr
+
+
+
+    .8fr
+
+
+
+    .9fr
+
+
+
+    auto;
+
+
+
+
+
+
+
+  gap:11px;
+
+
+
+
+
+
+
+  align-items:end;
+
+
+
+}
+
+
+
+
+
+
+
+.field label{
+
+
+
+  display:block;
+
+
+
+
+
+
+
+  color:#7188a0;
+
+
+
+
+
+
+
+  font-size:10px;
+
+
+
+
+
+
+
+  text-transform:uppercase;
+
+
+
+
+
+
+
+  letter-spacing:1.3px;
+
+
+
+
+
+
+
+  font-weight:800;
+
+
+
+
+
+
+
+  margin:0 0 7px 3px;
+
+
+
+}
+
+
+
+
+
+
+
+.field select{
+
+
+
+  width:100%;
+
+
+
+
+
+
+
+  height:48px;
+
+
+
+
+
+
+
+  background:#091727;
+
+
+
+
+
+
+
+  color:#e5f0fb;
+
+
+
+
+
+
+
+  border:1px solid var(--line2);
+
+
+
+
+
+
+
+  border-radius:13px;
+
+
+
+
+
+
+
+  padding:0 13px;
+
+
+
+
+
+
+
+  outline:none;
+
+
+
+}
+
+
+
+
+
+
+
+.field select:focus{
+
+
+
+  border-color:#5daeff;
+
+
+
+
+
+
+
+  box-shadow:
+
+
+
+    0 0 0 3px
+
+
+
+    rgba(93,174,255,.1);
+
+
+
+}
+
+
+
+
+
+
+
+.primary{
+
+
+
+  height:48px;
+
+
+
+
+
+
+
+  padding:0 20px;
+
+
+
+
+
+
+
+  border:0;
+
+
+
+
+
+
+
+  border-radius:13px;
+
+
+
+
+
+
+
+  color:#06111e;
+
+
+
+
+
+
+
+  font-weight:800;
+
+
+
+
+
+
+
+  background:
+
+
+
+    linear-gradient(
+
+
+
+      100deg,
+
+
+
+      #68c7ff,
+
+
+
+      #8d82ff
+
+
+
+    );
+
+
+
+
+
+
+
+  box-shadow:
+
+
+
+    0 10px 28px
+
+
+
+    rgba(90,140,255,.25);
+
+
+
+}
+
+
+
+
+
+
+
+.primary:hover{
+
+
+
+  transform:translateY(-1px);
+
+
+
+
+
+
+
+  filter:brightness(1.05);
+
+
+
+}
+
+
+
+
+
+
+
+.secondary{
+
+
+
+  height:48px;
+
+
+
+
+
+
+
+  padding:0 16px;
+
+
+
+
+
+
+
+  border:1px solid var(--line2);
+
+
+
+
+
+
+
+  border-radius:13px;
+
+
+
+
+
+
+
+  background:#0a1829;
+
+
+
+
+
+
+
+  color:#cbd9e7;
+
+
+
+
+
+
+
+  font-weight:700;
+
+
+
+}
+
+
+
+
+
+
+
+.action-row{
+
+
+
+  display:flex;
+
+
+
+
+
+
+
+  gap:10px;
+
+
+
+}
+
+
+
+
+
+
+
+.controls-note{
+
+
+
+  margin:12px 3px 0;
+
+
+
+
+
+
+
+  color:#687f98;
+
+
+
+
+
+
+
+  font-size:11px;
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+
+
+
+   WORKSPACE
+
+
+
+\========================= */
+
+
+
+
+
+
+
+.workspace{
+
+
+
+  display:grid;
+
+
+
+
+
+
+
+  grid-template-columns:
+
+
+
+    minmax(0,1.55fr)
+
+
+
+    minmax(330px,.65fr);
+
+
+
+
+
+
+
+  gap:18px;
+
+
+
+}
+
+
+
+
+
+
+
+.map-card{
+
+
+
+  overflow:hidden;
+
+
+
+
+
+
+
+  min-height:620px;
+
+
+
+}
+
+
+
+
+
+
+
+.card-head{
+
+
+
+  padding:18px 20px;
+
+
+
+
+
+
+
+  border-bottom:1px solid var(--line);
+
+
+
+
+
+
+
+  display:flex;
+
+
+
+
+
+
+
+  align-items:center;
+
+
+
+
+
+
+
+  justify-content:space-between;
+
+
+
+}
+
+
+
+
+
+
+
+.card-title{
+
+
+
+  font:
+
+
+
+    700 15px
+
+
+
+    Manrope;
+
+
+
+}
+
+
+
+
+
+
+
+.card-sub{
+
+
+
+  font-size:11px;
+
+
+
+
+
+
+
+  color:#7188a1;
+
+
+
+
+
+
+
+  margin-top:3px;
+
+
+
+}
+
+
+
+
+
+
+
+.map-wrap{
+
+
+
+  position:relative;
+
+
+
+
+
+
+
+  height:545px;
+
+
+
+}
+
+
+
+
+
+
+
+#map{
+
+
+
+  height:100%;
+
+
+
+
+
+
+
+  width:100%;
+
+
+
+
+
+
+
+  background:#091525;
+
+
+
+}
+
+
+
+
+
+
+
+.map-overlay{
+
+
+
+  position:absolute;
+
+
+
+
+
+
+
+  z-index:500;
+
+
+
+
+
+
+
+  left:18px;
+
+
+
+  top:18px;
+
+
+
+
+
+
+
+  display:flex;
+
+
+
+
+
+
+
+  gap:8px;
+
+
+
+
+
+
+
+  flex-wrap:wrap;
+
+
+
+
+
+
+
+  pointer-events:none;
+
+
+
+}
+
+
+
+
+
+
+
+.map-badge{
+
+
+
+  padding:8px 11px;
+
+
+
+
+
+
+
+  border-radius:10px;
+
+
+
+
+
+
+
+  border:1px solid rgba(255,255,255,.12);
+
+
+
+
+
+
+
+  background:rgba(6,17,29,.78);
+
+
+
+
+
+
+
+  backdrop-filter:blur(12px);
+
+
+
+
+
+
+
+  color:#c5d5e5;
+
+
+
+
+
+
+
+  font-size:11px;
+
+
+
+}
+
+
+
+
+
+
+
+.map-badge b{
+
+
+
+  color:white;
+
+
+
+}
+
+
+
+
+
+
+
+.site-float{
+
+
+
+  position:absolute;
+
+
+
+
+
+
+
+  z-index:600;
+
+
+
+
+
+
+
+  right:18px;
+
+
+
+  bottom:18px;
+
+
+
+
+
+
+
+  width:280px;
+
+
+
+
+
+
+
+  background:rgba(6,17,29,.91);
+
+
+
+
+
+
+
+  border:1px solid var(--line2);
+
+
+
+
+
+
+
+  border-radius:17px;
+
+
+
+
+
+
+
+  padding:15px;
+
+
+
+
+
+
+
+  backdrop-filter:blur(18px);
+
+
+
+
+
+
+
+  box-shadow:
+
+
+
+    0 18px 45px
+
+
+
+    rgba(0,0,0,.3);
+
+
+
+}
+
+
+
+
+
+
+
+.site-float .coords{
+
+
+
+  font:
+
+
+
+    700 12px
+
+
+
+    Manrope;
+
+
+
+
+
+
+
+  color:#eaf3ff;
+
+
+
+
+
+
+
+  margin:6px 0;
+
+
+
+}
+
+
+
+
+
+
+
+.site-float .area{
+
+
+
+  font-size:11px;
+
+
+
+
+
+
+
+  color:#7e95ac;
+
+
+
+}
+
+
+
+
+
+
+
+.empty-map{
+
+
+
+  position:absolute;
+
+
+
+
+
+
+
+  inset:0;
+
+
+
+
+
+
+
+  display:grid;
+
+
+
+
+
+
+
+  place-items:center;
+
+
+
+
+
+
+
+  pointer-events:none;
+
+
+
+
+
+
+
+  z-index:450;
+
+
+
+}
+
+
+
+
+
+
+
+.empty-map div{
+
+
+
+  text-align:center;
+
+
+
+
+
+
+
+  color:#7c91a8;
+
+
+
+}
+
+
+
+
+
+
+
+.empty-map strong{
+
+
+
+  display:block;
+
+
+
+
+
+
+
+  color:#b8c9da;
+
+
+
+
+
+
+
+  font:
+
+
+
+    700 15px
+
+
+
+    Manrope;
+
+
+
+
+
+
+
+  margin-bottom:5px;
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+
+
+
+   SIDE INTELLIGENCE
+
+
+
+\========================= */
+
+
+
+
+
+
+
+.side{
+
+
+
+  display:flex;
+
+
+
+
+
+
+
+  flex-direction:column;
+
+
+
+
+
+
+
+  gap:18px;
+
+
+
+}
+
+
+
+
+
+
+
+.insight-card{
+
+
+
+  padding:20px;
+
+
+
+}
+
+
+
+
+
+
+
+.metric-grid{
+
+
+
+  display:grid;
+
+
+
+
+
+
+
+  grid-template-columns:
+
+
+
+    1fr
+
+
+
+    1fr;
+
+
+
+
+
+
+
+  gap:10px;
+
+
+
+
+
+
+
+  margin-top:15px;
+
+
+
+}
+
+
+
+
+
+
+
+.metric{
+
+
+
+  background:#091827;
+
+
+
+
+
+
+
+  border:1px solid var(--line);
+
+
+
+
+
+
+
+  border-radius:15px;
+
+
+
+
+
+
+
+  padding:15px;
+
+
+
+}
+
+
+
+
+
+
+
+.metric .v{
+
+
+
+  font:
+
+
+
+    800 25px
+
+
+
+    Manrope;
+
+
+
+
+
+
+
+  letter-spacing:-1px;
+
+
+
+
+
+
+
+  margin-top:7px;
+
+
+
+}
+
+
+
+
+
+
+
+.metric .l{
+
+
+
+  font-size:10px;
+
+
+
+
+
+
+
+  color:#7188a1;
+
+
+
+
+
+
+
+  text-transform:uppercase;
+
+
+
+
+
+
+
+  letter-spacing:1.1px;
+
+
+
+}
+
+
+
+
+
+
+
+.metric .hint{
+
+
+
+  font-size:10px;
+
+
+
+
+
+
+
+  color:#617990;
+
+
+
+
+
+
+
+  margin-top:4px;
+
+
+
+}
+
+
+
+
+
+
+
+.risk{
+
+
+
+  color:var(--amber);
+
+
+
+}
+
+
+
+
+
+
+
+.event{
+
+
+
+  color:#7db8ff;
+
+
+
+}
+
+
+
+
+
+
+
+.climate{
+
+
+
+  color:#6de0cf;
+
+
+
+}
+
+
+
+
+
+
+
+.neutral{
+
+
+
+  color:#c8d5e3;
+
+
+
+}
+
+
+
+
+
+
+
+.bar{
+
+
+
+  height:7px;
+
+
+
+
+
+
+
+  background:#0b2134;
+
+
+
+
+
+
+
+  border-radius:99px;
+
+
+
+
+
+
+
+  overflow:hidden;
+
+
+
+
+
+
+
+  margin-top:13px;
+
+
+
+}
+
+
+
+
+
+
+
+.bar i{
+
+
+
+  display:block;
+
+
+
+
+
+
+
+  height:100%;
+
+
+
+
+
+
+
+  width:0;
+
+
+
+
+
+
+
+  background:
+
+
+
+    linear-gradient(
+
+
+
+      90deg,
+
+
+
+      #55e6d0,
+
+
+
+      #7f85ff
+
+
+
+    );
+
+
+
+
+
+
+
+  border-radius:99px;
+
+
+
+
+
+
+
+  transition:
+
+
+
+    width .7s;
+
+
+
+}
+
+
+
+
+
+
+
+.analysis-list{
+
+
+
+  margin-top:14px;
+
+
+
+
+
+
+
+  display:flex;
+
+
+
+
+
+
+
+  flex-direction:column;
+
+
+
+
+
+
+
+  gap:8px;
+
+
+
+}
+
+
+
+
+
+
+
+.analysis-item{
+
+
+
+  display:flex;
+
+
+
+
+
+
+
+  justify-content:space-between;
+
+
+
+
+
+
+
+  align-items:center;
+
+
+
+
+
+
+
+  padding:11px 12px;
+
+
+
+
+
+
+
+  border:1px solid var(--line);
+
+
+
+
+
+
+
+  background:#091827;
+
+
+
+
+
+
+
+  border-radius:12px;
+
+
+
+
+
+
+
+  font-size:11px;
+
+
+
+}
+
+
+
+
+
+
+
+.analysis-item span{
+
+
+
+  color:#7d94aa;
+
+
+
+}
+
+
+
+
+
+
+
+.analysis-item b{
+
+
+
+  color:#dbe8f4;
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+
+
+
+   EVIDENCE
+
+
+
+\========================= */
+
+
+
+
+
+
+
+.evidence-card{
+
+
+
+  padding:20px;
+
+
+
+}
+
+
+
+
+
+
+
+.source{
+
+
+
+  padding:12px 0;
+
+
+
+
+
+
+
+  border-bottom:1px solid var(--line);
+
+
+
+
+
+
+
+  font-size:11px;
+
+
+
+
+
+
+
+  color:#7e94aa;
+
+
+
+
+
+
+
+  display:flex;
+
+
+
+
+
+
+
+  gap:10px;
+
+
+
+}
+
+
+
+
+
+
+
+.source:last-child{
+
+
+
+  border:0;
+
+
+
+
+
+
+
+  padding-bottom:0;
+
+
+
+}
+
+
+
+
+
+
+
+.source .icon{
+
+
+
+  width:27px;
+
+
+
+  height:27px;
+
+
+
+
+
+
+
+  border-radius:9px;
+
+
+
+
+
+
+
+  background:#10243a;
+
+
+
+
+
+
+
+  display:grid;
+
+
+
+
+
+
+
+  place-items:center;
+
+
+
+
+
+
+
+  color:#8fc8ff;
+
+
+
+}
+
+
+
+
+
+
+
+.source b{
+
+
+
+  display:block;
+
+
+
+
+
+
+
+  color:#d8e5f1;
+
+
+
+
+
+
+
+  margin-bottom:3px;
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+
+
+
+   BOTTOM MODULES
+
+
+
+\========================= */
+
+
+
+
+
+
+
+.bottom-grid{
+
+
+
+  display:grid;
+
+
+
+
+
+
+
+  grid-template-columns:
+
+
+
+    1fr
+
+
+
+    1fr
+
+
+
+    1fr;
+
+
+
+
+
+
+
+  gap:18px;
+
+
+
+
+
+
+
+  margin-top:18px;
+
+
+
+}
+
+
+
+
+
+
+
+.module{
+
+
+
+  border:1px solid var(--line);
+
+
+
+
+
+
+
+  background:#0a1727;
+
+
+
+
+
+
+
+  border-radius:20px;
+
+
+
+
+
+
+
+  padding:18px;
+
+
+
+}
+
+
+
+
+
+
+
+.module-head{
+
+
+
+  display:flex;
+
+
+
+
+
+
+
+  justify-content:space-between;
+
+
+
+
+
+
+
+  align-items:center;
+
+
+
+}
+
+
+
+
+
+
+
+.module h3{
+
+
+
+  font:
+
+
+
+    700 14px
+
+
+
+    Manrope;
+
+
+
+
+
+
+
+  margin:0;
+
+
+
+}
+
+
+
+
+
+
+
+.tag{
+
+
+
+  font-size:9px;
+
+
+
+
+
+
+
+  letter-spacing:1px;
+
+
+
+
+
+
+
+  text-transform:uppercase;
+
+
+
+
+
+
+
+  color:#7890a8;
+
+
+
+}
+
+
+
+
+
+
+
+.module p{
+
+
+
+  color:#70869d;
+
+
+
+
+
+
+
+  font-size:11px;
+
+
+
+
+
+
+
+  line-height:1.6;
+
+
+
+
+
+
+
+  margin:12px 0 0;
+
+
+
+}
+
+
+
+
+
+
+
+.module .ready{
+
+
+
+  color:#5ee3a3;
+
+
+
+}
+
+
+
+
+
+
+
+.module .planned{
+
+
+
+  color:#ffca69;
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+
+
+
+   TOAST
+
+
+
+\========================= */
+
+
+
+
+
+
+
+.toast{
+
+
+
+  position:fixed;
+
+
+
+
+
+
+
+  right:24px;
+
+
+
+  bottom:24px;
+
+
+
+
+
+
+
+  z-index:9999;
+
+
+
+
+
+
+
+  padding:13px 16px;
+
+
+
+
+
+
+
+  border-radius:13px;
+
+
+
+
+
+
+
+  background:#0e2136;
+
+
+
+
+
+
+
+  border:1px solid var(--line2);
+
+
+
+
+
+
+
+  box-shadow:var(--shadow);
+
+
+
+
+
+
+
+  font-size:12px;
+
+
+
+
+
+
+
+  opacity:0;
+
+
+
+
+
+
+
+  transform:translateY(12px);
+
+
+
+
+
+
+
+  pointer-events:none;
+
+
+
+
+
+
+
+  transition:.25s;
+
+
+
+}
+
+
+
+
+
+
+
+.toast.show{
+
+
+
+  opacity:1;
+
+
+
+
+
+
+
+  transform:translateY(0);
+
+
+
+}
+
+
+
+
+
+
+
+.loading{
+
+
+
+  opacity:.55;
+
+
+
+
+
+
+
+  pointer-events:none;
+
+
+
+}
+
+
+
+
+
+
+
+/* =========================
+
+
+
+   RESPONSIVE
+
+
+
+\========================= */
+
+
+
+
+
+
+
+@media(max-width:1050px){
+
+
+
+
+
+
+
+  .hero,
+
+
+
+  .workspace{
+
+
+
+    grid-template-columns:1fr;
+
+
+
+  }
+
+
+
+
+
+
+
+  .side{
+
+
+
+    display:grid;
+
+
+
+
+
+
+
+    grid-template-columns:
+
+
+
+      1fr
+
+
+
+      1fr;
+
+
+
+  }
+
+
+
+
+
+
+
+  .bottom-grid{
+
+
+
+    grid-template-columns:1fr;
+
+
+
+  }
+
+
+
+}
+
+
+
+
+
+
+
+@media(max-width:760px){
+
+
+
+
+
+
+
+  .app{
+
+
+
+    grid-template-columns:1fr;
+
+
+
+  }
+
+
+
+
+
+
+
+  .rail{
+
+
+
+    display:none;
+
+
+
+  }
+
+
+
+
+
+
+
+  main{
+
+
+
+    padding:20px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .controls{
+
+
+
+    grid-template-columns:
+
+
+
+      1fr
+
+
+
+      1fr;
+
+
+
+  }
+
+
+
+
+
+
+
+  .action-row{
+
+
+
+    grid-column:1/-1;
+
+
+
+  }
+
+
+
+
+
+
+
+  .side{
+
+
+
+    display:flex;
+
+
+
+  }
+
+
+
+
+
+
+
+  .map-card{
+
+
+
+    min-height:520px;
+
+
+
+  }
+
+
+
+
+
+
+
+  .map-wrap{
+
+
+
+    height:445px;
+
+
+
+  }
+
+
+
+}
+
+
+
+</style>
+
+
+
+</head>
+
+
+
+
+
+
+
+<body>
+
+
+
+
+
+
+
+<div class="app">
+
+
+
+
+
+
+
+<!-- ======================================
+
+
+
+     LEFT NAVIGATION
+
+
+
+\======================================= -->
+
+
+
+
+
+
+
+<aside class="rail">
+
+
+
+
+
+
+
+  <div class="logo">
+
+
+
+    N
+
+
+
+  </div>
+
+
+
+
+
+
+
+  <div class="nav">
+
+
+
+
+
+
+
+    <button class="active" title="Workspace">
+
+
+
+      ⌖
+
+
+
+    </button>
+
+
+
+
+
+
+
+    <button title="Sites">
+
+
+
+      ◇
+
+
+
+    </button>
+
+
+
+
+
+
+
+    <button title="Intelligence">
+
+
+
+      ◫
+
+
+
+    </button>
+
+
+
+
+
+
+
+    <button title="Scenarios">
+
+
+
+      ≈
+
+
+
+    </button>
+
+
+
+
+
+
+
+    <button title="Routes">
+
+
+
+      ↗
+
+
+
+    </button>
+
+
+
+
+
+
+
+    <button title="Evidence">
+
+
+
+      ◈
+
+
+
+    </button>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+  <div class="rail-bottom">
+
+
+
+    NEXORA INTELLIGENCE
+
+
+
+  </div>
+
+
+
+
+
+
+
+</aside>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======================================
+
+
+
+     MAIN APPLICATION
+
+
+
+\======================================= -->
+
+
+
+
+
+
+
+<main>
+
+
+
+
+
+
+
+<!-- TOP BAR -->
+
+
+
+
+
+
+
+<header class="topbar">
+
+
+
+
+
+
+
+  <div>
+
+
+
+
+
+
+
+    <div class="eyebrow">
+
+
+
+      DECISION INTELLIGENCE PLATFORM
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class="brand">
+
+
+
+      NEXORA<span>®</span>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class="sub">
+
+
+
+      Project & Site Intelligence — evaluate before you commit capital.
+
+
+
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="top-actions">
+
+
+
+
+
+
+
+    <div class="status">
+
+
+
+
+
+
+
+      <i class="dot"></i>
+
+
+
+
+
+
+
+      Intelligence engine online
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class="founder">
+
+
+
+      NEXORA / Strategic Workspace
+
+
+
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+</header>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======================================
+
+
+
+     HERO
+
+
+
+\======================================= -->
+
+
+
+
+
+
+
+<section class="hero">
+
+
+
+
+
+
+
+  <div class="hero-card">
+
+
+
+
+
+
+
+    <div class="hero-title">
+
+
+
+
+
+
+
+      Know the site.<br>
+
+
+
+
+
+
+
+      <em>Before the investment.</em>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class="hero-copy">
+
+
+
+
+
+
+
+      NEXORA combines geographic context,
+
+
+
+      historical evidence, climate intelligence
+
+
+
+      and machine-learning signals into one
+
+
+
+      decision workspace for high-value projects.
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div class="hero-meta">
+
+
+
+
+
+
+
+      <div class="pill">
+
+
+
+        Evidence-led <strong>analysis</strong>
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="pill">
+
+
+
+        Real-time <strong>site context</strong>
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="pill">
+
+
+
+        ML-assisted <strong>risk signals</strong>
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="hero-card decision-card">
+
+
+
+
+
+
+
+    <div>
+
+
+
+
+
+
+
+      <div class="mini-label">
+
+
+
+        Site decision posture
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div
+
+
+
+        id="decisionText"
+
+
+
+        class="decision-main"
+
+
+
+      >
+
+
+
+        Awaiting site selection
+
+
+
+
+
+
+
+        <span>
+
+
+
+          Select a point or draw a plot to begin.
+
+
+
+        </span>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="score-row">
+
+
+
+
+
+
+
+      <div
+
+
+
+        id="decisionScore"
+
+
+
+        class="score"
+
+
+
+      >
+
+
+
+        —
+
+
+
+
+
+
+
+        <small>
+
+
+
+          /100
+
+
+
+        </small>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+      <div class="conf">
+
+
+
+
+
+
+
+        CONFIDENCE
+
+
+
+
+
+
+
+        <br>
+
+
+
+
+
+
+
+        <b id="confidence">
+
+
+
+          —
+
+
+
+        </b>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======================================
+
+
+
+     CONTROL PANEL
+
+
+
+\======================================= -->
+
+
+
+
+
+
+
+<section class="control-card">
+
+
+
+
+
+
+
+  <div
+
+
+
+    class="controls"
+
+
+
+    id="controls"
+
+
+
+  >
+
+
+
+
+
+
+
+    <div class="field">
+
+
+
+
+
+
+
+      <label>
+
+
+
+        Project type
+
+
+
+      </label>
+
+
+
+
+
+
+
+      <select id="projectType">
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Manufacturing / Industrial
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Commercial / Office
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Residential / Housing
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Healthcare / Hospital
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Education / Campus
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Energy / Power
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Warehouse / Logistics
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Transport / Infrastructure
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Hospitality / Hotel
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Agriculture / Agro-industry
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Water / Utilities
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Large Infrastructure Projects
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Data Centers
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Retail / Shopping
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Mixed-use / Township
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option>
+
+
+
+          Custom Project
+
+
+
+        </option>
+
+
+
+
+
+
+
+      </select>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="field">
+
+
+
+
+
+
+
+      <label>
+
+
+
+        Evidence radius
+
+
+
+      </label>
+
+
+
+
+
+
+
+      <select id="radius">
+
+
+
+
+
+
+
+        <option value="5">
+
+
+
+          5 km
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option value="10" selected>
+
+
+
+          10 km
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option value="25">
+
+
+
+          25 km
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option value="50">
+
+
+
+          50 km
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option value="100">
+
+
+
+          100 km
+
+
+
+        </option>
+
+
+
+
+
+
+
+      </select>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="field">
+
+
+
+
+
+
+
+      <label>
+
+
+
+        Site acquisition
+
+
+
+      </label>
+
+
+
+
+
+
+
+      <select id="siteMode">
+
+
+
+
+
+
+
+        <option value="point">
+
+
+
+          Single location
+
+
+
+        </option>
+
+
+
+
+
+
+
+        <option value="plot">
+
+
+
+          Plot / polygon
+
+
+
+        </option>
+
+
+
+
+
+
+
+      </select>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="action-row">
+
+
+
+
+
+
+
+      <button
+
+
+
+        class="secondary"
+
+
+
+        id="locateBtn"
+
+
+
+      >
+
+
+
+        ◎ Locate site
+
+
+
+      </button>
+
+
+
+
+
+
+
+      <button
+
+
+
+        class="primary"
+
+
+
+        id="analyzeBtn"
+
+
+
+      >
+
+
+
+        Run intelligence →
+
+
+
+      </button>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="controls-note">
+
+
+
+
+
+
+
+    Click the map for a candidate point.
+
+
+
+    Switch to Plot / polygon to draw the candidate
+
+
+
+    land parcel and calculate its area automatically.
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======================================
+
+
+
+     MAIN WORKSPACE
+
+
+
+\======================================= -->
+
+
+
+
+
+
+
+<section class="workspace">
+
+
+
+
+
+
+
+
+
+
+
+<!-- MAP -->
+
+
+
+
+
+
+
+<div class="map-card">
+
+
+
+
+
+
+
+  <div class="card-head">
+
+
+
+
+
+
+
+    <div>
+
+
+
+
+
+
+
+      <div class="card-title">
+
+
+
+        Geospatial Site Workspace
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="card-sub">
+
+
+
+        Define the candidate location or land parcel
+
+
+
+        directly on the map.
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div
+
+
+
+      class="pill"
+
+
+
+      id="mapStatus"
+
+
+
+    >
+
+
+
+      NO SITE SELECTED
+
+
+
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="map-wrap">
+
+
+
+
+
+
+
+    <div id="map"></div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="map-overlay">
+
+
+
+
+
+
+
+      <div class="map-badge">
+
+
+
+
+
+
+
+        MODE
+
+
+
+
+
+
+
+        <b id="modeBadge">
+
+
+
+          POINT
+
+
+
+        </b>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+      <div class="map-badge">
+
+
+
+
+
+
+
+        RADIUS
+
+
+
+
+
+
+
+        <b id="radiusBadge">
+
+
+
+          10 km
+
+
+
+        </b>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+      <div class="map-badge">
+
+
+
+
+
+
+
+        PROJECT
+
+
+
+
+
+
+
+        <b id="projectBadge">
+
+
+
+          INDUSTRIAL
+
+
+
+        </b>
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div
+
+
+
+      id="emptyMap"
+
+
+
+      class="empty-map"
+
+
+
+    >
+
+
+
+
+
+
+
+      <div>
+
+
+
+
+
+
+
+        <strong>
+
+
+
+          Define a candidate site
+
+
+
+        </strong>
+
+
+
+
+
+
+
+        Click anywhere on the map
+
+
+
+        to place a location.
+
+
+
+
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="site-float">
+
+
+
+
+
+
+
+      <div class="mini-label">
+
+
+
+        Candidate site
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div
+
+
+
+        id="coords"
+
+
+
+        class="coords"
+
+
+
+      >
+
+
+
+        No coordinates selected
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div
+
+
+
+        id="areaText"
+
+
+
+        class="area"
+
+
+
+      >
+
+
+
+        Plot area: —
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- RIGHT SIDE -->
+
+
+
+
+
+
+
+<div class="side">
+
+
+
+
+
+
+
+
+
+
+
+<!-- FLOOD -->
+
+
+
+
+
+
+
+<div class="insight-card">
+
+
+
+
+
+
+
+  <div class="mini-label">
+
+
+
+    Flood intelligence
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="metric-grid">
+
+
+
+
+
+
+
+
+
+
+
+    <div class="metric">
+
+
+
+
+
+
+
+      <div class="l">
+
+
+
+        ML probability
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div
+
+
+
+        id="floodProb"
+
+
+
+        class="v risk"
+
+
+
+      >
+
+
+
+        —
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="hint">
+
+
+
+        Calibrated model signal
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="metric">
+
+
+
+
+
+
+
+      <div class="l">
+
+
+
+        Risk level
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div
+
+
+
+        id="floodRisk"
+
+
+
+        class="v neutral"
+
+
+
+      >
+
+
+
+        —
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="hint">
+
+
+
+        Probability band
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="metric">
+
+
+
+
+
+
+
+      <div class="l">
+
+
+
+        Historical events
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div
+
+
+
+        id="eventCount"
+
+
+
+        class="v event"
+
+
+
+      >
+
+
+
+        —
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="hint">
+
+
+
+        Mapped in selected radius
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="metric">
+
+
+
+
+
+
+
+      <div class="l">
+
+
+
+        Evidence radius
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div
+
+
+
+        id="radiusValue"
+
+
+
+        class="v climate"
+
+
+
+      >
+
+
+
+        10 km
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="hint">
+
+
+
+        Spatial search window
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="bar">
+
+
+
+
+
+
+
+    <i id="riskBar"></i>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="analysis-list">
+
+
+
+
+
+
+
+
+
+
+
+    <div class="analysis-item">
+
+
+
+
+
+
+
+      <span>
+
+
+
+        Historical evidence
+
+
+
+      </span>
+
+
+
+
+
+
+
+      <b id="historyStatus">
+
+
+
+        Awaiting
+
+
+
+      </b>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="analysis-item">
+
+
+
+
+
+
+
+      <span>
+
+
+
+        Climate window
+
+
+
+      </span>
+
+
+
+
+
+
+
+      <b id="climatePeriod">
+
+
+
+        Awaiting
+
+
+
+      </b>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="analysis-item">
+
+
+
+
+
+
+
+      <span>
+
+
+
+        Model observations
+
+
+
+      </span>
+
+
+
+
+
+
+
+      <b id="observations">
+
+
+
+        Awaiting
+
+
+
+      </b>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- CLIMATE -->
+
+
+
+
+
+
+
+<div class="insight-card">
+
+
+
+
+
+
+
+  <div class="mini-label">
+
+
+
+    Climate context
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="metric-grid">
+
+
+
+
+
+
+
+
+
+
+
+    <div class="metric">
+
+
+
+
+
+
+
+      <div class="l">
+
+
+
+        Mean temperature
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div
+
+
+
+        id="tempMean"
+
+
+
+        class="v climate"
+
+
+
+      >
+
+
+
+        —
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="hint">
+
+
+
+        Historical average
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="metric">
+
+
+
+
+
+
+
+      <div class="l">
+
+
+
+        Max temperature
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div
+
+
+
+        id="tempMax"
+
+
+
+        class="v climate"
+
+
+
+      >
+
+
+
+        —
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="hint">
+
+
+
+        Observed period
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="metric">
+
+
+
+
+
+
+
+      <div class="l">
+
+
+
+        Annual precipitation
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div
+
+
+
+        id="precip"
+
+
+
+        class="v climate"
+
+
+
+      >
+
+
+
+        —
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="hint">
+
+
+
+        Observed total
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <div class="metric">
+
+
+
+
+
+
+
+      <div class="l">
+
+
+
+        Heavy-rain days
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div
+
+
+
+        id="heavyRain"
+
+
+
+        class="v climate"
+
+
+
+      >
+
+
+
+        —
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div class="hint">
+
+
+
+        ≥ 20 mm/day
+
+
+
+      </div>
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- EVIDENCE -->
+
+
+
+
+
+
+
+<div class="evidence-card">
+
+
+
+
+
+
+
+  <div class="mini-label">
+
+
+
+    Evidence & provenance
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="source">
+
+
+
+
+
+
+
+    <div class="icon">
+
+
+
+      ◉
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div>
+
+
+
+
+
+
+
+      <b>
+
+
+
+        Open-Meteo
+
+
+
+      </b>
+
+
+
+
+
+
+
+      Historical climate observations
+
+
+
+      used for feature engineering.
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="source">
+
+
+
+
+
+
+
+    <div class="icon">
+
+
+
+      ◇
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div>
+
+
+
+
+
+
+
+      <b>
+
+
+
+        Flood history
+
+
+
+      </b>
+
+
+
+
+
+
+
+      Mapped historical flood-event evidence
+
+
+
+      within the selected radius.
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+  <div class="source">
+
+
+
+
+
+
+
+    <div class="icon">
+
+
+
+      AI
+
+
+
+    </div>
+
+
+
+
+
+
+
+    <div>
+
+
+
+
+
+
+
+      <b>
+
+
+
+        NEXORA ML
+
+
+
+      </b>
+
+
+
+
+
+
+
+      Calibrated model signal — not a substitute
+
+
+
+      for engineering due diligence.
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======================================
+
+
+
+     FUTURE INTELLIGENCE MODULES
+
+
+
+\======================================= -->
+
+
+
+
+
+
+
+<section class="bottom-grid">
+
+
+
+
+
+
+
+
+
+
+
+<div class="module">
+
+
+
+
+
+
+
+  <div class="module-head">
+
+
+
+
+
+
+
+    <h3>
+
+
+
+      Terrain & Soil
+
+
+
+    </h3>
+
+
+
+
+
+
+
+    <span class="tag planned">
+
+
+
+      Expansion
+
+
+
+    </span>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+  <p>
+
+
+
+
+
+
+
+    Plot-level terrain, elevation, slope and soil
+
+
+
+    intelligence will feed the broader site
+
+
+
+    suitability layer.
+
+
+
+
+
+
+
+  </p>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="module">
+
+
+
+
+
+
+
+  <div class="module-head">
+
+
+
+
+
+
+
+    <h3>
+
+
+
+      Infrastructure & Routes
+
+
+
+    </h3>
+
+
+
+
+
+
+
+    <span class="tag planned">
+
+
+
+      Expansion
+
+
+
+    </span>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+  <p>
+
+
+
+
+
+
+
+    Road, rail, ports, utilities and logistics-route
+
+
+
+    intelligence will support project feasibility.
+
+
+
+
+
+
+
+  </p>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="module">
+
+
+
+
+
+
+
+  <div class="module-head">
+
+
+
+
+
+
+
+    <h3>
+
+
+
+      Decision Evidence
+
+
+
+    </h3>
+
+
+
+
+
+
+
+    <span class="tag ready">
+
+
+
+      Active
+
+
+
+    </span>
+
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+  <p>
+
+
+
+
+
+
+
+    Every result is designed to carry evidence,
+
+
+
+    model context and uncertainty rather than
+
+
+
+    presenting unsupported certainty.
+
+
+
+
+
+
+
+  </p>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+</section>
+
+
+
+
+
+
+
+</main>
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div
+
+
+
+  id="toast"
+
+
+
+  class="toast"
+
+
+
+></div>
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+
+
+
+
+
+<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+/* ======================================
+
+   NEXORA — FRONTEND INTELLIGENCE ENGINE
+
+   ====================================== */
+
+
+
+const $ = id => document.getElementById(id);
+
+
+
+let map = null;
+
+let marker = null;
+
+let radiusCircle = null;
+
+let selectedPoint = null;
+
+
+
+let drawnLayer = null;
+
+let drawnItems = null;
+
+let drawControl = null;
+
+
+
+let lastFlood = null;
+
+let lastML = null;
+
+let lastClimate = null;
+
+
+
+/* ======================================
+
+   TOAST
+
+   ====================================== */
+
+
+
+function toast(message){
+
+  const el = $("toast");
+
+  if(!el) return;
+
+
+
+  el.textContent = message;
+
+  el.classList.add("show");
+
+
+
+  clearTimeout(el._timer);
+
+  el._timer = setTimeout(() => {
+
+    el.classList.remove("show");
+
+  }, 3200);
+
+}
+
+
+
+/* ======================================
+
+   FORMAT HELPERS
+
+   ====================================== */
+
+
+
+function safeNumber(value){
+
+  const n = Number(value);
+
+  return Number.isFinite(n) ? n : null;
+
+}
+
+
+
+function formatProbability(probability){
+
+  const n = safeNumber(probability);
+
+  if(n === null) return "—";
+
+
+
+  const percent = n <= 1 ? n * 100 : n;
+
+  return `${percent.toFixed(1)}%`;
+
+}
+
+
+
+function formatDateRange(start, end){
+
+  if(!start || !end) return "Available";
+
+  return `${start} → ${end}`;
+
+}
+
+
+
+function haversineDistanceKm(a,b){
+
+  const R = 6371;
+
+  const dLat = (b.lat-a.lat) * Math.PI / 180;
+
+  const dLng = (b.lng-a.lng) * Math.PI / 180;
+
+
+
+  const x =
+
+    Math.sin(dLat/2) ** 2 +
+
+    Math.cos(a.lat*Math.PI/180) *
+
+    Math.cos(b.lat*Math.PI/180) *
+
+    Math.sin(dLng/2) ** 2;
+
+
+
+  return 2 * R * Math.asin(Math.sqrt(x));
+
+}
+
+
+
+/*
+
+ * Approximate polygon area on the local tangent plane.
+
+ * This is appropriate for UI feedback only.
+
+ * The backend/PostGIS remains the authoritative plot-area calculation.
+
+ */
+
+function haversineArea(latlngs){
+
+  if(!Array.isArray(latlngs) || latlngs.length < 3){
+
+    return 0;
+
+  }
+
+
+
+  const lat0 =
+
+    latlngs.reduce((sum,p) => sum + p.lat, 0) /
+
+    latlngs.length;
+
+
+
+  const R = 6371000;
+
+  const cosLat = Math.cos(lat0 * Math.PI / 180);
+
+
+
+  const xy = latlngs.map(p => ({
+
+    x: R * p.lng * Math.PI / 180 * cosLat,
+
+    y: R * p.lat * Math.PI / 180
+
+  }));
+
+
+
+  let area = 0;
+
+
+
+  for(let i=0; i<xy.length; i++){
+
+    const j = (i+1) % xy.length;
+
+    area +=
+
+      xy[i].x * xy[j].y -
+
+      xy[j].x * xy[i].y;
+
+  }
+
+
+
+  return Math.abs(area) / 2;
+
+}
+
+
+
+function formatArea(squareMeters){
+
+  if(!Number.isFinite(squareMeters) || squareMeters <= 0){
+
+    return "Plot area: —";
+
+  }
+
+
+
+  if(squareMeters >= 1000000){
+
+    return `Plot area: ${(squareMeters/1000000).toFixed(3)} km²`;
+
+  }
+
+
+
+  if(squareMeters >= 10000){
+
+    return `Plot area: ${(squareMeters/10000).toFixed(2)} ha`;
+
+  }
+
+
+
+  return `Plot area: ${squareMeters.toFixed(0)} m²`;
+
+}
+
+
+
+/* ======================================
+
+   MAP SITE STATE
+
+   ====================================== */
+
+
+
+function updatePoint(lat,lng,zoom=true){
+
+  lat = safeNumber(lat);
+
+  lng = safeNumber(lng);
+
+
+
+  if(
+
+    lat === null ||
+
+    lng === null ||
+
+    lat < -90 ||
+
+    lat > 90 ||
+
+    lng < -180 ||
+
+    lng > 180
+
+  ){
+
+    toast("Invalid coordinates.");
+
+    return;
+
+  }
+
+
+
+  selectedPoint = {lat,lng};
+
+
+
+  if(marker){
+
+    marker.setLatLng([lat,lng]);
+
+  }else{
+
+    marker = L.marker([lat,lng], {
+
+      title:"NEXORA candidate site"
+
+    }).addTo(map);
+
+  }
+
+
+
+  marker.bindPopup(`
+
+    <strong>NEXORA Candidate Site</strong><br>
+
+    ${lat.toFixed(6)}°, ${lng.toFixed(6)}°
+
+  `);
+
+
+
+  if(radiusCircle){
+
+    radiusCircle.setLatLng([lat,lng]);
+
+  }else{
+
+    radiusCircle = L.circle(
+
+      [lat,lng],
+
+      {
+
+        radius:Number($("radius").value) * 1000,
+
+        color:"#6f9dff",
+
+        weight:1,
+
+        fillColor:"#6f9dff",
+
+        fillOpacity:.05
+
+      }
+
+    ).addTo(map);
+
+  }
+
+
+
+  $("coords").textContent =
+
+    `${lat.toFixed(6)}° N / ${lng.toFixed(6)}° E`;
+
+
+
+  $("mapStatus").textContent = "SITE DEFINED";
+
+  $("mapStatus").style.color = "#6de0cf";
+
+
+
+  $("emptyMap").style.display = "none";
+
+
+
+  if(zoom){
+
+    map.setView([lat,lng],13);
+
+  }
+
+}
+
+
+
+/* ======================================
+
+   CLEAR PLOT
+
+   ====================================== */
+
+
+
+function clearPlot(){
+
+  if(drawnLayer && map){
+
+    map.removeLayer(drawnLayer);
+
+  }
+
+
+
+  drawnLayer = null;
+
+
+
+  if(drawnItems){
+
+    drawnItems.clearLayers();
+
+  }
+
+
+
+  $("areaText").textContent = "Plot area: —";
+
+}
+
+
+
+/* ======================================
+
+   DRAWING MODE
+
+   ====================================== */
+
+
+
+function setupDraw(){
+
+  if(!map) return;
+
+
+
+  if(drawControl){
+
+    map.removeControl(drawControl);
+
+    drawControl = null;
+
+  }
+
+
+
+  if(!drawnItems){
+
+    drawnItems = new L.FeatureGroup();
+
+    map.addLayer(drawnItems);
+
+  }
+
+
+
+  map.off("draw:created");
+
+
+
+  if($("siteMode").value !== "plot"){
+
+    $("modeBadge").textContent = "POINT";
+
+    return;
+
+  }
+
+
+
+  $("modeBadge").textContent = "PLOT";
+
+
+
+  drawControl = new L.Control.Draw({
+
+    position:"topleft",
+
+    draw:{
+
+      polygon:{
+
+        allowIntersection:false,
+
+        showArea:false,
+
+        shapeOptions:{
+
+          color:"#6f9dff",
+
+          weight:2,
+
+          fillOpacity:.12
+
+        }
+
+      },
+
+      rectangle:{
+
+        shapeOptions:{
+
+          color:"#55e6d0",
+
+          weight:2,
+
+          fillOpacity:.12
+
+        }
+
+      },
+
+      polyline:false,
+
+      circle:false,
+
+      circlemarker:false,
+
+      marker:false
+
+    },
+
+    edit:{
+
+      featureGroup:drawnItems
+
+    }
+
+  });
+
+
+
+  map.addControl(drawControl);
+
+
+
+  map.on(
+
+    "draw:created",
+
+    function(e){
+
+      clearPlot();
+
+
+
+      drawnLayer = e.layer;
+
+      drawnItems.addLayer(drawnLayer);
+
+
+
+      const latlngs =
+
+        e.layer.getLatLngs()[0] || [];
+
+
+
+      const area =
+
+        haversineArea(latlngs);
+
+
+
+      $("areaText").textContent =
+
+        formatArea(area);
+
+
+
+      const center =
+
+        e.layer.getBounds().getCenter();
+
+
+
+      updatePoint(
+
+        center.lat,
+
+        center.lng,
+
+        false
+
+      );
+
+
+
+      toast(
+
+        "Candidate plot defined. Area calculated automatically."
+
+      );
+
+    }
+
+  );
+
+}
+
+
+
+/* ======================================
+
+   UPDATE CONTROLS
+
+   ====================================== */
+
+
+
+function updateControls(){
+
+  const radius =
+
+    Number($("radius").value);
+
+
+
+  $("radiusBadge").textContent =
+
+    `${radius} km`;
+
+
+
+  $("radiusValue").textContent =
+
+    `${radius} km`;
+
+
+
+  const project =
+
+    $("projectType").value;
+
+
+
+  $("projectBadge").textContent =
+
+    project
+
+      .split(" / ")[0]
+
+      .toUpperCase()
+
+      .slice(0,18);
+
+
+
+  if(radiusCircle && selectedPoint){
+
+    radiusCircle.setRadius(radius * 1000);
+
+  }
+
+
+
+  setupDraw();
+
+}
+
+
+
+/* ======================================
+
+   INITIALIZE MAP
+
+   ====================================== */
+
+
+
+function initMap(){
+
+  map =
+
+    L.map("map",{
+
+      zoomControl:true,
+
+      preferCanvas:true
+
+    }).setView(
+
+      [20.5937,78.9629],
+
+      5
+
+    );
+
+
+
+  L.tileLayer(
+
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+    {
+
+      maxZoom:19,
+
+      attribution:"© OpenStreetMap contributors"
+
+    }
+
+  ).addTo(map);
+
+
+
+  drawnItems = new L.FeatureGroup();
+
+  map.addLayer(drawnItems);
+
+
+
+  map.on(
+
+    "click",
+
+    e => {
+
+      if($("siteMode").value === "plot"){
+
+        return;
+
+      }
+
+
+
+      updatePoint(
+
+        e.latlng.lat,
+
+        e.latlng.lng
+
+      );
+
+
+
+      toast(
+
+        "Candidate site selected. Run intelligence when ready."
+
+      );
+
+    }
+
+  );
+
+
+
+  setTimeout(() => {
+
+    map.invalidateSize();
+
+  },300);
+
+}
+
+
+
+/* ======================================
+
+   API HELPER
+
+   ====================================== */
+
+
+
+async function getJSON(url,options={}){
+
+  const response =
+
+    await fetch(url,options);
+
+
+
+  const data =
+
+    await response
+
+      .json()
+
+      .catch(() => ({}));
+
+
+
+  if(!response.ok){
+
+    throw new Error(
+
+      data.detail ||
+
+      data.message ||
+
+      `Request failed (${response.status})`
+
+    );
+
+  }
+
+
+
+  return data;
+
+}
+
+
+
+/* ======================================
+
+   LOADING
+
+   ====================================== */
+
+
+
+function setLoading(value){
+
+  $("analyzeBtn").disabled = value;
+
+
+
+  $("analyzeBtn").textContent =
+
+    value
+
+      ? "Analyzing…"
+
+      : "Run intelligence →";
+
+}
+
+
+
+/* ======================================
+
+   DECISION SCORE
+
+   ====================================== */
+
+
+
+function setDecision(probability,confidence){
+
+  const p = safeNumber(probability);
+
+
+
+  if(p === null){
+
+    $("decisionScore").innerHTML =
+
+      `— <small>/100</small>`;
+
+
+
+    $("confidence").textContent =
+
+      confidence || "—";
+
+
+
+    $("decisionText").innerHTML = `
+
+      Awaiting evidence
+
+      <span>
+
+        Run intelligence after selecting a site.
+
+      </span>
+
+    `;
+
+
+
+    return;
+
+  }
+
+
+
+  const normalized =
+
+    p > 1 ? p/100 : p;
+
+
+
+  const score =
+
+    Math.max(
+
+      0,
+
+      Math.min(
+
+        100,
+
+        Math.round((1-normalized)*100)
+
+      )
+
+    );
+
+
+
+  $("decisionScore").innerHTML =
+
+    `${score}
+
+     <small>/100</small>`;
+
+
+
+  $("confidence").textContent =
+
+    confidence || "MODEL";
+
+
+
+  let text =
+
+    "Positive decision signal";
+
+
+
+  let sub =
+
+    "Current evidence is relatively favorable.";
+
+
+
+  if(normalized >= .8){
+
+    text = "Material risk signal";
+
+    sub =
+
+      "Additional due diligence is strongly indicated.";
+
+  }else if(normalized >= .6){
+
+    text = "Elevated risk signal";
+
+    sub =
+
+      "The site needs deeper engineering and historical review.";
+
+  }else if(normalized >= .4){
+
+    text = "Watch-list signal";
+
+    sub =
+
+      "Evidence is mixed; continue with broader site analysis.";
+
+  }
+
+
+
+  $("decisionText").innerHTML = `
+
+    ${text}
+
+    <span>${sub}</span>
+
+  `;
+
+}
+
+
+
+/* ======================================
+
+   RENDER FLOOD
+
+   ====================================== */
+
+
+
+function renderFlood(history){
+
+  lastFlood = history;
+
+
+
+  const prediction =
+
+    lastML?.prediction ||
+
+    lastML?.ml_prediction ||
+
+    {};
+
+
+
+  // Prefer the API's explicit percentage value.
+
+  // Fallback to probability if percentage is unavailable.
+
+  let probabilityPercent =
+
+    safeNumber(prediction.probability_percent);
+
+
+
+  if(probabilityPercent === null){
+
+    const probability =
+
+      safeNumber(
+
+        prediction.probability ??
+
+        lastML?.ml_prediction?.probability ??
+
+        lastML?.probability
+
+      );
+
+
+
+    if(probability !== null){
+
+      probabilityPercent =
+
+        probability <= 1
+
+          ? probability * 100
+
+          : probability;
+
+    }
+
+  }
+
+
+
+  // ML probability
+
+  $("floodProb").textContent =
+
+    probabilityPercent === null
+
+      ? "—"
+
+      : `${probabilityPercent.toFixed(1)}%`;
+
+
+
+  // Risk level
+
+  $("floodRisk").textContent =
+
+    prediction.risk_level ||
+
+    lastML?.ml_prediction?.risk_level ||
+
+    lastML?.risk_level ||
+
+    "—";
+
+
+
+  // Historical events
+
+  $("eventCount").textContent =
+
+    history?.event_count ??
+
+    history?.historical_events_found ??
+
+    0;
+
+
+
+  // Radius
+
+  $("radiusValue").textContent =
+
+    `${Number($("radius").value)} km`;
+
+
+
+  // Historical evidence status
+
+  $("historyStatus").textContent =
+
+    history?.risk_status ||
+
+    "DATA LIMITED";
+
+
+
+  // Risk bar
+
+  $("riskBar").style.width =
+
+    probabilityPercent === null
+
+      ? "0%"
+
+      : `${Math.min(
+
+          100,
+
+          Math.max(0, probabilityPercent)
+
+        )}%`;
+
+}
+
+
+
+/* ======================================
+
+   RENDER CLIMATE
+
+   ====================================== */
+
+
+
+function renderClimate(climate){
+
+  lastClimate = climate;
+
+
+
+  const c =
+
+    climate?.climate ||
+
+    {};
+
+
+
+  $("tempMean").textContent =
+
+    c.temperature_mean != null
+
+      ? `${Number(c.temperature_mean).toFixed(1)}°C`
+
+      : "—";
+
+
+
+  $("tempMax").textContent =
+
+    c.temperature_max != null
+
+      ? `${Number(c.temperature_max).toFixed(1)}°C`
+
+      : "—";
+
+
+
+  $("precip").textContent =
+
+    c.precipitation_sum != null
+
+      ? `${Number(c.precipitation_sum).toFixed(0)} mm`
+
+      : "—";
+
+
+
+  $("heavyRain").textContent =
+
+    c.heavy_rain_days != null
+
+      ? Number(c.heavy_rain_days)
+
+      : "—";
+
+
+
+  $("climatePeriod").textContent =
+
+    formatDateRange(
+
+      climate?.period?.start_date,
+
+      climate?.period?.end_date
+
+    );
+
+
+
+  $("observations").textContent =
+
+    climate?.observation_count != null
+
+      ? Number(
+
+          climate.observation_count
+
+        ).toLocaleString()
+
+      : "—";
+
+}
+
+
+
+/* ======================================
+
+   RUN FULL INTELLIGENCE
+
+   ====================================== */
+
+
+
+async function runAnalysis(){
+
+  if(!selectedPoint){
+
+    toast(
+
+      "Select a site on the map first."
+
+    );
+
+    return;
+
+  }
+
+
+
+  setLoading(true);
+
+
+
+  const {
+
+    lat,
+
+    lng
+
+  } = selectedPoint;
+
+
+
+  const radius =
+
+    Number($("radius").value);
+
+
+
+  const floodUrl =
+
+    `/api/analyze/flood` +
+
+    `?latitude=${encodeURIComponent(lat)}` +
+
+    `&longitude=${encodeURIComponent(lng)}` +
+
+    `&radius_km=${encodeURIComponent(radius)}`;
+
+
+
+  const mlUrl =
+
+    `/api/analyze/flood-ml` +
+
+    `?latitude=${encodeURIComponent(lat)}` +
+
+    `&longitude=${encodeURIComponent(lng)}`;
+
+
+
+  const climateUrl =
+
+    `/analyze/climate` +
+
+    `?latitude=${encodeURIComponent(lat)}` +
+
+    `&longitude=${encodeURIComponent(lng)}`;
+
+
+
+  try{
+
+    /*
+
+     * All three calls use the current FastAPI contracts:
+
+     * - historical flood: GET
+
+     * - flood ML: POST with query parameters
+
+     * - climate: GET with query parameters
+
+     */
+
+    const results =
+
+      await Promise.allSettled([
+
+        getJSON(floodUrl),
+
+        getJSON(
+
+          mlUrl,
+
+          {method:"POST"}
+
+        ),
+
+        getJSON(climateUrl)
+
+      ]);
+
+
+
+    const historyResult = results[0];
+
+    const mlResult = results[1];
+
+    const climateResult = results[2];
+
+
+
+    if(historyResult.status === "fulfilled"){
+
+      renderFlood(
+
+        historyResult.value
+
+      );
+
+    }else{
+
+      console.error(
+
+        "Historical flood analysis failed:",
+
+        historyResult.reason
+
+      );
+
+
+
+      $("eventCount").textContent = "—";
+
+      $("historyStatus").textContent =
+
+        "DATA LIMITED";
+
+    }
+
+
+
+    if(mlResult.status === "fulfilled"){
+
+      lastML = mlResult.value;
+
+
+
+      const prediction =
+
+        lastML.prediction ||
+
+        lastML.ml_prediction ||
+
+        {};
+
+
+
+      const features =
+
+        prediction.features ||
+
+        lastML.ml_prediction?.features ||
+
+        lastML.climate_features ||
+
+        {};
+
+
+
+      const probability =
+
+        safeNumber(
+
+          prediction.probability ??
+
+          lastML.ml_prediction?.probability ??
+
+          lastML.probability
+
+        );
+
+
+
+      $("floodProb").textContent =
+
+        formatProbability(probability);
+
+
+
+      $("floodRisk").textContent =
+
+        prediction.risk_level ||
+
+        lastML.ml_prediction?.risk_level ||
+
+        lastML.risk_level ||
+
+        "—";
+
+
+
+      $("climatePeriod").textContent =
+
+        formatDateRange(
+
+          lastML.climate_period?.start_date,
+
+          lastML.climate_period?.end_date
+
+        );
+
+
+
+      $("observations").textContent =
+
+        lastML.climate_period?.observation_count != null
+
+          ? Number(
+
+              lastML.climate_period.observation_count
+
+            ).toLocaleString()
+
+          : "—";
+
+
+
+      $("heavyRain").textContent =
+
+        features.heavy_rain_days != null
+
+          ? Number(
+
+              features.heavy_rain_days
+
+            )
+
+          : "—";
+
+
+
+      $("riskBar").style.width =
+
+        probability === null
+
+          ? "0%"
+
+          : `${Math.min(
+
+              100,
+
+              Math.max(
+
+                0,
+
+                probability <= 1
+
+                  ? probability*100
+
+                  : probability
+
+              )
+
+            )}%`;
+
+    }else{
+
+      console.error(
+
+        "Flood ML analysis failed:",
+
+        mlResult.reason
+
+      );
+
+
+
+      $("floodProb").textContent = "—";
+
+      $("floodRisk").textContent =
+
+        "UNAVAILABLE";
+
+      $("riskBar").style.width = "0%";
+
+    }
+
+
+
+    if(climateResult.status === "fulfilled"){
+
+      renderClimate(
+
+        climateResult.value
+
+      );
+
+    }else{
+
+      console.error(
+
+        "Climate analysis failed:",
+
+        climateResult.reason
+
+      );
+
+
+
+      $("climatePeriod").textContent =
+
+        "DATA LIMITED";
+
+
+
+      $("observations").textContent =
+
+        "—";
+
+
+
+      $("tempMean").textContent =
+
+        "—";
+
+
+
+      $("tempMax").textContent =
+
+        "—";
+
+
+
+      $("precip").textContent =
+
+        "—";
+
+
+
+      $("heavyRain").textContent =
+
+        "—";
+
+    }
+
+
+
+    const prediction =
+
+      lastML?.prediction ||
+
+      lastML?.ml_prediction ||
+
+      {};
+
+
+
+    const probability =
+
+      safeNumber(
+
+        prediction.probability ??
+
+        lastML?.ml_prediction?.probability ??
+
+        lastML?.probability
+
+      );
+
+
+
+    const confidence =
+
+      lastFlood?.confidence ||
+
+      "MODEL";
+
+
+
+    setDecision(
+
+      probability,
+
+      confidence
+
+    );
+
+
+
+    const successCount =
+
+      results.filter(
+
+        r => r.status === "fulfilled"
+
+      ).length;
+
+
+
+    if(successCount === 3){
+
+      toast(
+
+        "NEXORA intelligence updated successfully."
+
+      );
+
+    }else if(successCount > 0){
+
+      toast(
+
+        "NEXORA updated with partial evidence."
+
+      );
+
+    }else{
+
+      toast(
+
+        "NEXORA could not retrieve analysis data."
+
+      );
+
+    }
+
+
+
+  }catch(error){
+
+    console.error(
+
+      "NEXORA analysis error:",
+
+      error
+
+    );
+
+
+
+    toast(
+
+      "Analysis failed: " +
+
+      error.message
+
+    );
+
+  }finally{
+
+    setLoading(false);
+
+  }
+
+}
+
+
+
+/* ======================================
+
+   EVENTS
+
+   ====================================== */
+
+
+
+$("radius")
+
+  .addEventListener(
+
+    "change",
+
+    updateControls
+
+  );
+
+
+
+$("projectType")
+
+  .addEventListener(
+
+    "change",
+
+    updateControls
+
+  );
+
+
+
+$("siteMode")
+
+  .addEventListener(
+
+    "change",
+
+    () => {
+
+      clearPlot();
+
+      setupDraw();
+
+
+
+      if($("siteMode").value === "point"){
+
+        $("modeBadge").textContent =
+
+          "POINT";
+
+
+
+        toast(
+
+          "Point mode active — click the map."
+
+        );
+
+      }else{
+
+        $("modeBadge").textContent =
+
+          "PLOT";
+
+
+
+        toast(
+
+          "Plot mode active — use the polygon tool on the map."
+
+        );
+
+      }
+
+    }
+
+  );
+
+
+
+$("analyzeBtn")
+
+  .addEventListener(
+
+    "click",
+
+    runAnalysis
+
+  );
+
+
+
+/* ======================================
+
+   GEOLOCATION
+
+   ====================================== */
+
+
+
+$("locateBtn")
+
+  .addEventListener(
+
+    "click",
+
+    () => {
+
+      if(!navigator.geolocation){
+
+        toast(
+
+          "Geolocation is not available in this browser."
+
+        );
+
+        return;
+
+      }
+
+
+
+      toast(
+
+        "Requesting your location…"
+
+      );
+
+
+
+      navigator.geolocation.getCurrentPosition(
+
+        position => {
+
+          updatePoint(
+
+            position.coords.latitude,
+
+            position.coords.longitude
+
+          );
+
+
+
+          toast(
+
+            "Location acquired."
+
+          );
+
+        },
+
+        error => {
+
+          toast(
+
+            "Location unavailable: " +
+
+            error.message
+
+          );
+
+        },
+
+        {
+
+          enableHighAccuracy:true,
+
+          timeout:10000,
+
+          maximumAge:30000
+
+        }
+
+      );
+
+    }
+
+  );
+
+
+
+/* ======================================
+
+   START
+
+   ====================================== */
+
+
+
+initMap();
+
+updateControls();
+
+
+
+</script>
+
+
+
+</body>
+
+</html>
