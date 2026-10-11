@@ -23,3 +23,14 @@ venv/
 # Generated outputs
 dist/
 build/
+
+
+# NEXORA cached data
+data/climate_cache/
+data/soil_cache/
+
+# Keep environment files private
+.env
+.env.*
+!.env.example
+.envvxc
