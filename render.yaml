@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: nexora
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: NEXORA_AUTH_ENABLED
+        value: "true"
+      - key: NEXORA_AUTH_USERNAME
+        sync: false
+      - key: NEXORA_AUTH_PASSWORD
+        sync: false
+      - key: DATABASE_URL
+        sync: false

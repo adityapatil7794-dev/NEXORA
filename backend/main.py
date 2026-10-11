@@ -34,6 +34,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 FRONTEND_DIR = BASE_DIR / "frontend"
 DATA_DIR = BASE_DIR / "data"
 ML_DIR = BASE_DIR / "ml"
+
+# NEXORA_HOSTED_DATABASE_V1
+if os.getenv("DATABASE_URL"):
+    from urllib.parse import urlparse, unquote
+    _nx_db = urlparse(os.environ["DATABASE_URL"])
+    os.environ["NEXORA_DB_HOST"] = unquote(_nx_db.hostname or "")
+    os.environ["NEXORA_DB_PORT"] = str(_nx_db.port or 5432)
+    os.environ["NEXORA_DB_NAME"] = unquote(_nx_db.path.lstrip("/"))
+    os.environ["NEXORA_DB_USER"] = unquote(_nx_db.username or "")
+    os.environ["NEXORA_DB_PASSWORD"] = unquote(_nx_db.password or "")
+    os.environ["PGHOST"] = unquote(_nx_db.hostname or "")
+    os.environ["PGPORT"] = str(_nx_db.port or 5432)
+    os.environ["PGDATABASE"] = unquote(_nx_db.path.lstrip("/"))
+    os.environ["PGUSER"] = unquote(_nx_db.username or "")
+    os.environ["PGPASSWORD"] = unquote(_nx_db.password or "")
+    os.environ["PGSSLMODE"] = "require"
+
 DB_HOST = os.getenv("NEXORA_DB_HOST", "localhost")
 DB_PORT = int(os.getenv("NEXORA_DB_PORT", "5432"))
 DB_NAME = os.getenv("NEXORA_DB_NAME", "nexora_db")
@@ -1783,3 +1800,57 @@ def nexora_analysis_history(limit: int = 20, endpoint: str = None):
     finally:
         conn.close()
 
+
+
+# NEXORA_HOSTING_FOUNDATION_V1
+from fastapi.responses import FileResponse as _NexoraFileResponse
+from fastapi import Request as _NexoraHostRequest
+import secrets as _nexora_secrets
+import base64 as _nexora_base64
+import hmac as _nexora_hmac
+
+@app.get("/", include_in_schema=False)
+def nexora_landing_page():
+    return _NexoraFileResponse(FRONTEND_DIR / "index.html")
+
+@app.get("/index.html", include_in_schema=False)
+def nexora_landing_page_file():
+    return _NexoraFileResponse(FRONTEND_DIR / "index.html")
+
+@app.get("/dashboard.html", include_in_schema=False)
+def nexora_dashboard_page():
+    return _NexoraFileResponse(FRONTEND_DIR / "dashboard.html")
+
+@app.middleware("http")
+async def nexora_host_access_control(request: _NexoraHostRequest, call_next):
+    enabled = os.getenv("NEXORA_AUTH_ENABLED", "false").lower() == "true"
+    if enabled and request.url.path != "/api/health":
+        username = os.getenv("NEXORA_AUTH_USERNAME", "")
+        password = os.getenv("NEXORA_AUTH_PASSWORD", "")
+        if not username or not password:
+            from fastapi.responses import PlainTextResponse
+            return PlainTextResponse(
+                "NEXORA access is not configured.", status_code=503
+            )
+        supplied = request.headers.get("authorization", "")
+        valid = False
+        if supplied.startswith("Basic "):
+            try:
+                decoded = _nexora_base64.b64decode(
+                    supplied[6:], validate=True
+                ).decode("utf-8")
+                candidate_user, candidate_password = decoded.split(":", 1)
+                valid = (
+                    _nexora_secrets.compare_digest(candidate_user, username)
+                    and _nexora_secrets.compare_digest(candidate_password, password)
+                )
+            except (ValueError, UnicodeError):
+                valid = False
+        if not valid:
+            from fastapi.responses import PlainTextResponse
+            return PlainTextResponse(
+                "Authentication required.",
+                status_code=401,
+                headers={"WWW-Authenticate": 'Basic realm="NEXORA"'},
+            )
+    return await call_next(request)

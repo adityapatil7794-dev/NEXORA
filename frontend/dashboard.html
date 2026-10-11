@@ -58,7 +58,7 @@
         longitude: String(site.lng)
       });
       const response = await fetch(
-        "http://127.0.0.1:8000/api/soil/geographic?" + query.toString()
+        window.location.origin + "/api/soil/geographic?" + query.toString()
       );
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || "HTTP " + response.status);
@@ -164,7 +164,7 @@
         });
 
         const response = await fetch(
-          "http://127.0.0.1:8000/api/analyze/route?" + params.toString()
+          window.location.origin + "/api/analyze/route?" + params.toString()
         );
         const payload = await response.json();
 
@@ -356,7 +356,7 @@ $("run").onclick = async () => {
       longitude: String(site.lng),
       radius_km: String(site.radius)
     });
-    const base = "http://127.0.0.1:8000";
+    const base = window.location.origin;
 
     const requests = await Promise.allSettled([
       fetch(base + "/api/site/intelligence?" + params).then(async r => {
@@ -1184,7 +1184,7 @@ $("export").onclick = () => {
 
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/analyze/route?" + query.toString()
+          window.location.origin + "/api/analyze/route?" + query.toString()
         );
         const data = await response.json();
         if (!response.ok) {
@@ -1306,7 +1306,7 @@ $("export").onclick = () => {
   if (!root || root.dataset.ready === "1") return;
   root.dataset.ready = "1";
 
-  const api = "http://127.0.0.1:8000";
+  const api = window.location.origin;
   const $ = id => document.getElementById(id);
   const state = { site: null, results: {}, runAt: null };
 
@@ -1561,7 +1561,7 @@ $("export").onclick = () => {
   if (!panel || panel.dataset.ready === "1") return;
   panel.dataset.ready = "1";
   const $ = id => document.getElementById(id);
-  const api = "http://127.0.0.1:8000";
+  const api = window.location.origin;
   let lastReport = null;
 
   function esc(v) {
