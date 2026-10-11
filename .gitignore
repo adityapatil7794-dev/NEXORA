@@ -44,3 +44,5 @@ venv/
 .venv/
 .envvxc
 .envvxc
+
+data/
